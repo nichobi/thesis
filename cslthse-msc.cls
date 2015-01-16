@@ -94,7 +94,7 @@
 			   \ifx \@supervisors \empty
 				\ClassError{cslthse-msc}{Missing supervisor. Use either \protect\supervisor{name,email} or \protect{name1,email1}{name2,email2}}{You must specify your thesis supervisor(s).}
 				\else Supervisors: \@supervisors \fi
-			\else Supervisor: \@supervisor \fi \\ Examiner 
+			\else Supervisor: \@supervisor \fi \\ Examiner: 
 			\ifx \@examiner \empty
 				\ClassError{cslthse-msc}{Missing examiner. Use \protect\examiner{name,email}}{You must specify your thesis examiner.}
 			\else	 \@examiner \fi } \end{center}}
