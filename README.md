@@ -10,7 +10,7 @@ This repository contains the LaTeX class and a template for generating a Master'
 
 ### How do I use it? ###
 
-* Have a look at the [.pdf](https://bitbucket.org/flavius_gruian/msccls/src/f41357805beba89f9c78c3fe8d93e11a995abdeb/MScTemplateCS.pdf?at=master) included in this repository
+* Have a look at the MScTemplateCS.pdf included in this repository
 * Download and use with your LaTeX
 
 ### Contribution guidelines ###
