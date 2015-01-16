@@ -1,29 +1,18 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This repository contains the LaTeX class and a template for generating a Master's Thesis report carried out at the Department of Computer Science, Lund University.
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
+* Suggested format for a Master's Thesis at CS@LTH
+* Version: Jan 16, 2015
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
-### How do I get set up? ###
+### How do I use it? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Have a look at the .pdf included in this repository
+* Download and use with your LaTeX
 
 ### Contribution guidelines ###
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* Talk to me (Flavius@CS) to get access
