@@ -71,7 +71,7 @@
     % custom commands
 	\newcommand{\company}[1]{\def \@company {#1}}
 	\newcommand{\supervisor}[1]{\def \@supervisor {#1}}
-	\newcommand{\supervisors}[2]{\def \@supervisors {#1 \\ #2}}
+	\newcommand{\supervisors}[2]{\def \@firstsupervisor {#1}  \def \@secondsupervisor {#2}}
 	\newcommand{\examiner}[1]{\def \@examiner {#1}}
 	\newcommand{\subtitle}[1]{\def \@subtitle {#1}}
 	\company{}
@@ -85,17 +85,22 @@
 	\posttitle{\par \vskip 0.5em \ifx \@subtitle \empty \vskip 1em \else {\Large(\@subtitle)} \fi \end{center}\noindent\rule{\linewidth}{1pt}\vskip 0.5em}
 	\predate{\vskip 5em \begin{center}\Large}
 	\postdate{\par\vfill {\large Master's thesis work carried out at 
-		\ifx \@company \empty
+		\ifx\@company\empty
 		 	\ClassWarning{cslthse-msc}{Host company missing. Use \protect\company{name}. Defaulting to CS.}
 		 	\\ the Department of Computer Science, Lund University.
-		\else \@company. \fi } \\  
-				\vskip 1em {\normalsize
-			\ifx \@supervisor \empty
-			   \ifx \@supervisors \empty
-				\ClassError{cslthse-msc}{Missing supervisor. Use either \protect\supervisor{name,email} or \protect{name1,email1}{name2,email2}}{You must specify your thesis supervisor(s).}
-				\else Supervisors: \@supervisors \fi
-			\else Supervisor: \@supervisor \fi \\ Examiner: 
-			\ifx \@examiner \empty
+		\else \@company. \fi }
+		  
+			\vskip 1em 
+			{\normalsize
+			\ifx\@supervisor\empty 
+			   %\ClassWarning{cslthse-msc}{Empty supervisor.}
+			   \ifx\@firstsupervisor\empty
+				  \ClassError{cslthse-msc}{Missing supervisor. Use either \protect\supervisor{name,email} or \protect\supervisors{name1,email1}{name2,email2}}{You must specify your thesis supervisor(s).}
+				\else Supervisors: \@firstsupervisor ~\\ \@secondsupervisor \fi
+			\else Supervisor: \@supervisor \fi
+			
+			Examiner: 
+			\ifx\@examiner \empty
 				\ClassError{cslthse-msc}{Missing examiner. Use \protect\examiner{name,email}}{You must specify your thesis examiner.}
 			\else	 \@examiner \fi } \end{center}}
 
