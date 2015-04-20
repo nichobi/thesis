@@ -5,7 +5,7 @@ This repository contains the LaTeX class and a template for generating a Master'
 ### What is this repository for? ###
 
 * Suggested format for a Master's Thesis at CS@LTH
-* Version: Jan 16, 2015
+* Version: Apr 20, 2015
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I use it? ###
