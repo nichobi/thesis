@@ -10,6 +10,7 @@
 \usepackage[titletoc, header, page]{appendix}
 
 \usepackage{hyperref}
+\usepackage{pdfpages}
 
 %\geometry{showframe}
 
@@ -266,6 +267,7 @@ The following environments and tools were used to create this document:
 \item \texttt{appendix}, for appendices
 \item \texttt{printlen}, for printing text sizes
 \item \texttt{textcomp}, for text companion fonts (e.g. bullet)
+\item \texttt{pdfpages}, to include the popular science summary page at the end
 \end{itemize}
 
 \noindent Other useful packages:
@@ -274,6 +276,12 @@ The following environments and tools were used to create this document:
 \end{itemize}
 
 \chapter{List of Changes}
+\subsubsection{Since 2015/09/11}
+\begin{itemize}
+\item Added a template for the popular science summary, in the \verb+popsci+ directory.
+\item Added code in the report that imports the one page popular science \texttt{pdf} at the end of the document.
+\end{itemize}
+
 \subsubsection{Since 2015/04/27}
 \begin{itemize}
 \item Improved the \textbf{Structure} chapter and added more detailed comments for each part.
@@ -305,6 +313,8 @@ The following environments and tools were used to create this document:
 \item Made a separate document class, for clarity.
 \item made it work with pdfLaTeX and garamond.sty, in addition to XeLaTeX and true type fonts. It is up to the user to get the hold of the garamond.zip from \url{http://gael-varoquaux.info/computers/garamond/index.html}.
 \end{itemize}
+
+\includepdf[pages={1}]{popsci/popsci.pdf}
 \end{appendices}
 
 
