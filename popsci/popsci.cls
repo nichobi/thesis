@@ -1,13 +1,15 @@
 % popsci.cls
-%Magnus Hultin, 2016
-% 
+% Magnus Hultin, 2016
+% Flavius Gruian, 2016-06-23
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{popsci}[2016/05/02  Popular science paper, Department of Computer Science, Lund University]
+\ProvidesClass{popsci}[2016/06/23  Popular science paper, Department of Computer Science, Lund University]
 
-\LoadClass[paper=a4, fontsize=11pt, twocolumn]{article}
+\LoadClass[a4paper, 11pt, twocolumn]{article}
+% use showframe in parameters if you want to check the margins
+\RequirePackage[left=2cm,right=2cm,top=3cm,bottom=4cm, bindingoffset=0cm,ignorefoot]{geometry}
 
-\textheight = 540pt%592pt
+%\textheight = 600pt %540pt%592pt
 
 \RequirePackage{ifxetex}
 
@@ -62,7 +64,7 @@
 
 
 \lhead{
-\vskip -5em
+\vskip -3em
 \begin{tabular}{| l }
   \sffamily \small INSTITUTIONEN FÖR DATAVETENSKAP \textbar\ LUNDS TEKNISKA HÖGSKOLA \textbar\ PRESENTATIONSDAG \@presentationsdag \\
   \\
@@ -96,7 +98,7 @@
 
 \newcommand{\HorRule}{\color{black} \rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
 
-\pretitle{\vspace{20pt} \begin{flushleft} \fontsize{25pt}{20} \usefont{OT1}{phv}{b}{n} \color{LUorange} \selectfont} % Horizontal rule before the title
+\pretitle{\vspace{50pt} \begin{flushleft} \fontsize{25pt}{20} \usefont{OT1}{phv}{b}{n} \color{LUorange} \selectfont} % Horizontal rule before the title
 
 \posttitle{\par\end{flushleft}\vskip 0.2em\HorRule} % Whitespace under the title
 
@@ -106,7 +108,7 @@
 
 
 \newcommand{\theabstract}[1]{
-\vskip -35em
+%\vskip -35em
 
 \twocolumn[
   \begin{@twocolumnfalse} 
