@@ -8,21 +8,19 @@
 %\usepackage{makeidx}
 \usepackage{graphicx}
 \usepackage[titletoc, header, page]{appendix}
-
-\usepackage{hyperref}
-\usepackage{pdfpages}
+\usepackage{transparent}
 
 %\geometry{showframe}
+%better like this?
+\student{Flavius Gruian}{Flavius.Gruian@cs.lth.se}
+%\students{Flavius Gruian}{Flavius.Gruian@cs.lth.se}{Camilla Lekebjer}{Camilla.Lekebjer@cs.lth.se}
 
-\author{
-	Flavius Gruian \\
-	{\normalsize \href{mailto:Flavius.Gruian@cs.lth.se}{\texttt{Flavius.Gruian@cs.lth.se}}}
-%	\and
-%	Camilla Lekebjer \\
-%    {\normalsize \href{mailto:Camilla.Lekebjer@cs.lth.se}{\texttt{Camilla.Lekebjer@cs.lth.se}}}
-}
+\thesisnumber{LU-CS-EX: 2019-XX} % Birger Swahn will provide this number to you, once the thesis is ready for publication
+% default is Master. Uncomment the following for "kandidatarbete"/Bachelor's thesis
+%\thesistype{Bachelor}
 
 \title{Formatting a Master's Thesis}
+
 \subtitle{A {\LaTeX} class}
 %\company{The Corporation AB LTD Inc}
 \supervisors{John Deer, \href{mailto:jdeer@company.com}{\texttt{jdeer@company.com}}}{Don Jeer, \href{mailto:djeer@xy.lth.se}{\texttt{djeer@xy.lth.se}}}
@@ -49,14 +47,13 @@ Your abstract should capture, in English, the whole thesis with focus on the pro
 Leave a \textit{2cm} vertical space after the abstract and provide a few keywords relevant for your report. Use five to six words, of which at most two should be from the title.
 }
 
-\keywords{MSc, template, report, style, structure}
+\keywords{MSc, BSc, template, report, style, structure}
 
 %% Only used to display font sizes
 \makeatletter
 \newcommand\thefontsize[1]{{#1 \f@size pt\par}}
 \makeatother
 %%%%%%%%%%
-
 
 \begin{document}
 \makefrontmatter
@@ -156,12 +153,18 @@ The numbering system for equations should be similar to that used for tables and
 \section{References}
 Your references should be gathered in a \textbf{References} section, located at the end of the document (before \textbf{Appendices}). We recommend using number style references, ordered as appearing in the document or alphabetically. Have a look at the references in this template in order to figure out the style, fonts and fields. Web references are acceptable (with restraint) as long as you specify the date you accessed the given link \cite{fontspec, CTAN}. You may of course use URLs directly in the document, using mono-space font, i.e. \url{http://cs.lth.se/}.
 
+Make sure you add references as close to the claim as possible~\cite{CTAN}, as shown, not at the end of a whole paragraph. Notice also that there is a space before the reference; best is to use \verb+~\cite{ref}+, to allow for unbreakable spaces. References should not be used after the period marking the end of sentence. Using the reference as follows (end of paragrah, after period) is {\em{strongly discouraged}}, since it says nothing about which specific claim you provide the reference for. \cite{fontspec} 
+
+ 
+
 \section{Colours}
 As a general rule, all theses are printed in black-and-white, with the exception of selected parts in selected theses that need to display colour images essential to describing the thesis outcome (\textit{computer graphics}, for instance).
 
 A strong requirement is for using \textbf{black text on white background} in your document's main text. Otherwise we do encourage using colours in your figures, or other elements (i.e. the colour marking internal and external references) that would make the document more readable on screen. You may also emphasize table rows, columns, cells, or headers using white text on black background, or black text on light grey background.
 
-Finally, note that the document should look good in black-and-white print. Colours are often rendered using monochrome textures in print, which makes them look different from on screen versions. This means that you should choose your colours wisely, and even opt for black-and-white textures when the distinction between colours is hard to make in print. The best way to check how your document looks, is to print out a copy yourself.
+Note that the document should look good in black-and-white print. Colours are often rendered using monochrome textures in print, which makes them look different from on screen versions. This means that you should choose your colours wisely, and even opt for black-and-white textures when the distinction between colours is hard to make in print. The best way to check how your document looks, is to print out a copy yourself.
+
+The {\LaTeX}  class defines also a few {\em LTH} standard colours, which you could use in your document for various elements, to adhere to the standard university profile. \\These are: {\color{LTHblue}LTHblue}, {\color{LTHbronze}LTHbronze}, {\color{LTHgreen}LTHgreen}, {\color{LTHpink}LTHpink}, {\color{LTHcyan}LTHcyan}, {\color{LTHgrey}LTHgrey}.
 
 \chapter{Language}
 
@@ -229,8 +232,8 @@ It is a good idea to discuss the structure of the report with your supervisor ra
 \item[Evaluation] is the part where you present the finds. Depending on the area this part contains a subset or all of the following: 
 \begin{itemize}
 \item \textbf{Experimental Setup} should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
-\item \textbf{Results} contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews).
-\item \textbf{Discussion} allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. This might also be a good place to describe your positive and negative experiences related to the work you carried out.
+\item \textbf{Results} contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
+\item \textbf{Discussion} allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
 \end{itemize} 
 Occasionally these sections are intermingled, if this allows for a better presentation of your work. However, try to distinguish between measurements or hard data (results) and extrapolations, interpretations, or speculations (discussion).
 \item[Conclusions] should summarize your findings and possible improvements or recommendations.
@@ -238,15 +241,16 @@ Occasionally these sections are intermingled, if this allows for a better presen
 \item[Appendices] should contain lengthy details of the experimental setup, mathematical proofs, code download information, and shorter code snippets. Avoid longer code listings. Source code should rather be made available for download on a website or on-line repository of your choosing.
 
 \end{description}
+% Should use consistent formatting when it comes to Names ("FirstName LastName", or "F. LastName")
 \makebibliography{MyMSc}
 
 \begin{appendices}
 \chapter{About This Document}
 The following environments and tools were used to create this document:
 \begin{itemize}
-\item operating system: Mac OS X 10.10.1
+\item operating system: Mac OS X 10.14
 \item tex distribution: MacTeX-2014, \url{http://www.tug.org/mactex/}
-\item tex editor: Texmaker 4.4.1 for Mac, \url{http://www.xm1math.net/texmaker/} for its XeLaTeX flow (recommended) or pdfLaTeX flow
+\item tex editor: Texmaker 5.0.2 for Mac, \url{http://www.xm1math.net/texmaker/} for its XeLaTeX flow (recommended) or pdfLaTeX flow
 \item bibtex editor: BibDesk 1.6.3 for Mac, \url{http://bibdesk.sourceforge.net/}
 \item fonts \texttt{cslthse-msc.cls} document class): 
 \begin{description}
@@ -279,6 +283,15 @@ The following environments and tools were used to create this document:
 
 \chapter{List of Changes}
 
+\subsubsection{Since 2018/11/21}
+\begin{itemize}
+\item Added the report cover to the template (along with the archive cover, as the 2nd page). This includes the front cover and back as the pop-sci article. Once the report is ready for print, the authors will receive a report number, of the format \texttt{LU-CS-EX 2019-NN}. Generate the report using this number in the template, to get a print-ready pdf.
+\item Changed both the report and pop-sci template to use \verb+\student+ or \verb+\students+ commands instead of \verb+\author+.
+\item Clarified the difference between {\em Results} and {\em Discussion} sections in a report.
+\item Added more information about the use of {\em References}.
+\item Added {\em LTH} colours in the template and description in {\em Colours}.
+\end{itemize}
+
 \subsubsection{Since 2016/04/29}
 \begin{itemize}
 \item A better template for the popular science summary, by Magnus Hultin.
@@ -307,7 +320,7 @@ The following environments and tools were used to create this document:
 
 \subsubsection{Since 2013/08/30}
 \begin{itemize}
-\item Changed fonts from Garamond (Times New Roman), Helvetica (Arial), Courier (Source Code Pro) to Tex Gyre fonts, namely Termes, Heros, Cursor, which are freely available with TexLive 2013 installation. These are all clones of Times New Roman, Helvetica and Courier, respectively. Garamond is problematic on some systems, being a non-freely available font.
+\item Changed fonts from Garamond ( Times New Roman ), Helvetica ( Arial ), Courier ( Source Code Pro ) to Tex Gyre fonts, namely Termes, Heros, Cursor, which are freely available with TexLive 2013 installation. These are all clones of Times New Roman, Helvetica and Courier, respectively. Garamond is problematic on some systems, being a non-freely available font.
 \item Corrected the \textit{Face} column in Table \ref{tab:fonts} to correctly depict the font face.
 \end{itemize}
 
@@ -322,6 +335,14 @@ The following environments and tools were used to create this document:
 \item made it work with pdfLaTeX and garamond.sty, in addition to XeLaTeX and true type fonts. It is up to the user to get the hold of the garamond.zip from \url{http://gael-varoquaux.info/computers/garamond/index.html}.
 \end{itemize}
 
+%make sure we're on even page with the pop-sci
+\checkoddpage
+\ifoddpage
+\else
+   \newpage
+   \thispagestyle{empty}
+   \mbox{ }
+\fi
 \includepdf[pages={1}]{popsci/popsci.pdf}
 \end{appendices}
 

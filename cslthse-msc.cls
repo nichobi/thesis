@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2015/01/16 v0.5 
+		[2018/11/27 v0.7 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -23,10 +23,18 @@
 \makeatletter
 % for textbullets
 \usepackage{textcomp}
+% other useful packages
+\usepackage{overpic}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\usepackage{ifoddpage}
+\usepackage{textpos}
 
    \ifxetex
 		\usepackage[no-math]{fontspec}
-	 	\setmainfont{TeX Gyre Termes}
+%	 	\setmainfont{TeX Gyre Termes}
+		\setmainfont{Garamond}
 	   	\setsansfont{TeX Gyre Heros}
     	\setmonofont{TeX Gyre Cursor}
 	\else
@@ -44,9 +52,22 @@
 	\fi
 \makeatother
 
+% LTH color definitions - could take them out in the class
+\definecolor{LTHblue}{RGB}{0,0,128}
+\definecolor{LTHbronze}{RGB}{156,97,20}
+
+% the following have also their 50% lighter versions: use \color{LTHpink!50}
+\definecolor{LTHgreen}{RGB}{173,202,184}
+\definecolor{LTHpink}{RGB}{233,196,199}
+\definecolor{LTHcream}{RGB}{214,210,196}
+\definecolor{LTHcyan}{RGB}{185,211,220}
+\definecolor{LTHgrey}{RGB}{191,184,175}
+
 % fancy headers, footers
 \RequirePackage{fancyhdr}
 \makeatletter
+\def\vhrulefill#1{\leavevmode\leaders\hrule\@height#1\hfill \kern\z@}
+
 \pagestyle{fancy}
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}{}}
@@ -74,17 +95,108 @@
 	\newcommand{\supervisors}[2]{\def \@firstsupervisor {#1}  \def \@secondsupervisor {#2}}
 	\newcommand{\examiner}[1]{\def \@examiner {#1}}
 	\newcommand{\subtitle}[1]{\def \@subtitle {#1}}
+%	\newcommand{\student}[1]{\def \@student {#1} \def \@author {#1}}
+	\newcommand{\student}[2]{\def \@student {#1} \def \@studentemail {#2} \def \@author {#1 \\ {\normalsize \href{mailto:#2}{\texttt{#2}}}}}
+	\newcommand{\students}[4]{\def \@firststudent {#1} \def \@firststudentemail {#2} \def \@secondstudent {#3} \def \@secondstudentemail {#4}}
+% \def \@author {{{#1} \\ {\normalsize \href{mailto:{#2}}{\texttt{{#2}}}}}}}% \and {{#3} \\ {\normalsize \href{mailto:#4}{\texttt{#4}}}}}}  	
+%	\newcommand{\students}[2]{\def \@firststudent {#1} \def \@secondstudent {#2} \def \@author {#1 \and #2}}
+	\newcommand{\thesisnumber}[1]{\def \@thesisnumber {#1}}
+	\newcommand{\thesistype}[1]{\def \@thesistype {#1}}
 	\company{}
 	\supervisor{}
 	\supervisors{}{}
 	\examiner{}
 	\subtitle{}
-	
+	\student{}{}
+	\students{}{}{}{}	
+	\thesistype{Master}
 	% for the title page
-	\pretitle{\noindent\rule{\linewidth}{1pt}\begin{center}\Huge}
+	\pretitle{	
+\ifx\@secondstudent\empty%
+	\author{\@student \\ {\normalsize \href{mailto:\@studentemail}{\texttt{\@studentemail}}}}%
+\else%
+	\author{\@firststudent \\ {\normalsize \href{mailto:\@firststudentemail}{\texttt{\@firststudentemail}}} \and%
+\@secondstudent \\ {\normalsize \href{mailto:\@secondstudentemail}{\texttt{\@secondstudentemail}}}}%
+\fi%
+%
+%cover page
+\begin{textblock*}{\paperwidth}(-3.75cm,-15.7cm)%
+	\begin{overpic}[scale=.845]{cover.jpg} 
+		\put(15,90){\color{white}\large\bfseries\textsf{\MakeUppercase{\@thesistype}'S THESIS \the\year{}}}
+%		\put(15,90){\color{white}\Large\bfseries\textsf{BACHELOR'S THESIS \the\year{}}}
+%		\put(15,77){\colorbox{white}{\makebox(53,12){ % 77, 12 for single line title 
+%		\put(15,74){\colorbox{white}{\makebox(53,15){ % 74, 15 for double line title, 
+		\put(15,71){\colorbox{white}{\makebox(53,18){ % 71, 18 for tripple line title, 
+			\begin{minipage}{0.72\textwidth}
+				\color{LTHbronze}
+				\begin{flushleft}
+%					{\Huge\bfseries\thetitle\ } \\
+					{\fontsize{34}{40}\selectfont\bfseries\thetitle\ \thetitle\ \thetitle\ } \\
+						\vhrulefill{2pt} \\
+					\vspace{10pt}
+					{\Large\bfseries\textsf{\@student}}
+				\end{flushleft}
+			\end{minipage}
+		}}}
+		\put(3,10){\color{white}{
+			\begin{minipage}{0.5\textwidth}
+			\begin{flushright}
+				{\large\textsf{\textsc{ISSN 1650-2884}}}\\
+				\vspace{5pt}
+				{\large\textsf{\textsc{LU-CS-EX 2019-XX}}} \\ % Replace XX with the number from Birger Swahn	
+				\vspace{10pt}
+				{\large\textsf{\MakeUppercase{Department of Computer Science}}}\\
+				\vspace{5pt}
+				{\large\textsf{\MakeUppercase{LTH $\mid$ Lund University}}}\\
+			\end{flushright}
+			\end{minipage}		
+		}}
+		% bottom white margin...
+		\put(0,2){\colorbox{white}{\makebox(68,1){}}}
+		% logo
+%		\put(32.5,-23.8){\includegraphics[scale=1.2]{LUlogoNEG.png}}		
+  		\put(34,-28){\includegraphics[scale=1.2]{LUlogoRGB.png}}		
+    \end{overpic}
+\end{textblock*}
+
+\clearpage
+%\begingroup
+  \pagestyle{empty}
+  \null
+  \newpage
+%\endgroup
+
+% now the archive page
+%\begin{titlepage}
+\center{\Huge EXAMENSARBETE}\\
+%{\HugeKANDIDATARBETE}\\
+\center{\huge Datavetenskap}
+\vspace{150pt}
+\center{\huge \@thesisnumber}
+\vspace{50pt}
+\center{\huge\bfseries\thetitle}
+\vspace{100pt}
+\center{\Large\bfseries
+	\ifx\@secondstudent\empty \@student% 
+	\else \@firststudent, \@secondstudent% 
+	\fi 
+}%
+%\end{titlepage}
+
+\clearpage
+
+\pagestyle{empty}
+\null
+\newpage
+\thispagestyle{empty}	
+\setcounter{page}{1}
+	
+	\noindent\rule{\linewidth}{1pt}\begin{center}\Huge\bfseries
+	
+}
 	\posttitle{\par \vskip 0.5em \ifx \@subtitle \empty \vskip 1em \else {\Large(\@subtitle)} \fi \end{center}\noindent\rule{\linewidth}{1pt}\vskip 0.5em}
 	\predate{\vskip 5em \begin{center}\Large}
-	\postdate{\par\vfill {\large Master's thesis work carried out at 
+	\postdate{\par\vfill {\large {\@thesistype}'s thesis work carried out at 
 		\ifx\@company\empty
 		 	\ClassWarning{cslthse-msc}{Host company missing. Use \protect\company{name}. Defaulting to CS.}
 		 	\\ the Department of Computer Science, Lund University.

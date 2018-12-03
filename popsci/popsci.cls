@@ -49,8 +49,8 @@
 \newcommand{\supervisor}[1]{\def \@supervisor {#1}}
 \newcommand{\supervisors}[2]{\def \@firstsupervisor {#1}  \def \@secondsupervisor {#2}}
 \newcommand{\examiner}[1]{\def \@examiner {#1}}
-\newcommand{\student}[1]{\def \@student {#1}}
-
+\newcommand{\student}[1]{\def \@student {#1} \def \@author {#1}}
+\newcommand{\students}[2]{\def \@firststudent {#1} \def \@secondstudent {#2} \def \@author {#1, #2}}
 
 \newcommand{\examensarbete}[1]{\def \@examensarbete {#1}}
 
@@ -59,6 +59,11 @@
 
 \newcommand{\presentationsdag}[1]{\def \@presentationsdag{#1}}
 
+\presentationsdag{}
+\examensarbete{}
+\examensarbeteTwoRows{}{}
+\student{}
+\students{}{}
 
 \RequirePackage{titling}
 
@@ -66,7 +71,12 @@
 \lhead{
 \vskip -3em
 \begin{tabular}{| l }
-  \sffamily \small INSTITUTIONEN FÖR DATAVETENSKAP \textbar\ LUNDS TEKNISKA HÖGSKOLA \textbar\ PRESENTATIONSDAG \@presentationsdag \\
+  \sffamily \small INSTITUTIONEN FÖR DATAVETENSKAP \textbar\ LUNDS TEKNISKA HÖGSKOLA
+  \ifx \@presentationsdag \empty 
+  \else
+    \textbar\ PRESENTERAD \@presentationsdag 
+  \fi
+  \\
   \\
   \ifx\@examensarbete \empty  
 	\underline{\sffamily \textbf{EXAMENSARBETE} \@firstexamensarbete} \\
@@ -74,7 +84,11 @@
   \else 
   	\underline{\sffamily \textbf{EXAMENSARBETE} \@examensarbete} \\
   \fi
-  \underline{\sffamily \textbf{STUDENT} \@author} \\
+  \ifx \@student \empty 
+    \underline{\sffamily \textbf{STUDENTER} \@firststudent, \@secondstudent}\\
+  \else
+    \underline{\sffamily \textbf{STUDENT} \@student}\\
+  \fi
   \underline{\sffamily \textbf{HANDLEDARE} \@supervisor} \\
   \underline{\sffamily \textbf{EXAMINATOR} \@examiner}
 \end{tabular}
