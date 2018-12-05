@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2018/11/27 v0.7 
+		[2018/12/05 v1.0 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -101,7 +101,12 @@
 % \def \@author {{{#1} \\ {\normalsize \href{mailto:{#2}}{\texttt{{#2}}}}}}}% \and {{#3} \\ {\normalsize \href{mailto:#4}{\texttt{#4}}}}}}  	
 %	\newcommand{\students}[2]{\def \@firststudent {#1} \def \@secondstudent {#2} \def \@author {#1 \and #2}}
 	\newcommand{\thesisnumber}[1]{\def \@thesisnumber {#1}}
-	\newcommand{\thesistype}[1]{\def \@thesistype {#1}}
+	\newcommand{\thesistype}[2]{\def \@thesistype {#1} \def \@arbete {#2}}
+	\newcommand{\titlebox}[2]{\def \@titleY {#1} \def \@titleH {#2}}
+	\newcommand{\onelinetitle}{\titlebox{77}{12}}
+	\newcommand{\twolinestitle}{\titlebox{74}{15}}% two lines title
+	\newcommand{\threelinestitle}{\titlebox{71}{18}}% three lines title
+
 	\company{}
 	\supervisor{}
 	\supervisors{}{}
@@ -109,7 +114,7 @@
 	\subtitle{}
 	\student{}{}
 	\students{}{}{}{}	
-	\thesistype{Master}
+	\thesistype{Master}{Examensarbete}
 	% for the title page
 	\pretitle{	
 \ifx\@secondstudent\empty%
@@ -119,6 +124,8 @@
 \@secondstudent \\ {\normalsize \href{mailto:\@secondstudentemail}{\texttt{\@secondstudentemail}}}}%
 \fi%
 %
+% figure out title box size
+%\setcounter{titleY}{80 - 3 * \@titlelines}
 %cover page
 \begin{textblock*}{\paperwidth}(-3.75cm,-15.7cm)%
 	\begin{overpic}[scale=.845]{cover.jpg} 
@@ -126,19 +133,19 @@
 %		\put(15,90){\color{white}\Large\bfseries\textsf{BACHELOR'S THESIS \the\year{}}}
 %		\put(15,77){\colorbox{white}{\makebox(53,12){ % 77, 12 for single line title 
 %		\put(15,74){\colorbox{white}{\makebox(53,15){ % 74, 15 for double line title, 
-		\put(15,71){\colorbox{white}{\makebox(53,18){ % 71, 18 for tripple line title, 
+		\put(15,\@titleY){\colorbox{white}{\makebox(53,\@titleH){ % 71, 18 for tripple line title, 
 			\begin{minipage}{0.72\textwidth}
 				\color{LTHbronze}
 				\begin{flushleft}
 %					{\Huge\bfseries\thetitle\ } \\
-					{\fontsize{34}{40}\selectfont\bfseries\thetitle\ \thetitle\ \thetitle\ } \\
+					{\fontsize{34}{40}\selectfont\bfseries\thetitle\ } \\
 						\vhrulefill{2pt} \\
 					\vspace{10pt}
 					{\Large\bfseries\textsf{\@student}}
 				\end{flushleft}
 			\end{minipage}
 		}}}
-		\put(3,10){\color{white}{
+		\put(1,9){\color{white}{
 			\begin{minipage}{0.5\textwidth}
 			\begin{flushright}
 				{\large\textsf{\textsc{ISSN 1650-2884}}}\\
@@ -168,7 +175,7 @@
 
 % now the archive page
 %\begin{titlepage}
-\center{\Huge EXAMENSARBETE}\\
+\center{\Huge \MakeUppercase{\@arbete}}\\
 %{\HugeKANDIDATARBETE}\\
 \center{\huge Datavetenskap}
 \vspace{150pt}
