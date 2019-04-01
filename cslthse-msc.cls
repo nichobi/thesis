@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2018/12/05 v1.0 
+		[2019/04/01 v1.2 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -34,16 +34,29 @@
    \ifxetex
 		\usepackage[no-math]{fontspec}
 %	 	\setmainfont{TeX Gyre Termes}
-		\setmainfont{Garamond}
-	   	\setsansfont{TeX Gyre Heros}
+		\setmainfont{Adobe Garamond Pro} 
+	   	\setsansfont{Frutiger LT Std} %\setsansfont{TeX Gyre Adventor} %	   	\setsansfont{TeX Gyre Heros}
     	\setmonofont{TeX Gyre Cursor}
 	\else
 		\ClassWarning{cslthse-msc}{Use XeTeX for better fonts!}		
 		\usepackage[T1]{fontenc}
+
+%		\usepackage{qtxmath}	
+%		\usepackage{tgtermes}
+%		\usepackage{tgheros}
+%		\usepackage{tgcursor}
+%%% change
+		\usepackage{lmodern}%\usepackage{tgcursor}
 		\usepackage{qtxmath}	
-		\usepackage{tgtermes}
-		\usepackage{tgheros}
-		\usepackage{tgcursor}
+%        \usepackage{tgschola}%\usepackage{tgadventor}%\usepackage{tgheros}
+%        \global\let\bfseries\sbweight
+        \usepackage{CormorantGaramond}%\usepackage{tgtermes}
+%        %for CormorantGaramond
+        \let\oldnormalfont\normalfont
+        \def\normalfont{\oldnormalfont\mdseries}
+%        %endfor CormorantGaramond
+%%% end change
+
 
 %		\InputIfFileExists{garamond.sty}{\AtBeginDocument{\garamond}}{%
 %			\ClassError{cslthse-msc}{Missing garamond.sty. Unpack the zip from http://gael-varoquaux.info/computers/garamond/index.html in your source directory.}{}}
@@ -106,6 +119,7 @@
 	\newcommand{\onelinetitle}{\titlebox{77}{12}}
 	\newcommand{\twolinestitle}{\titlebox{74}{15}}% two lines title
 	\newcommand{\threelinestitle}{\titlebox{71}{18}}% three lines title
+	\newcommand{\fourlinestitle}{\titlebox{68}{21}}% four lines title
 
 	\company{}
 	\supervisor{}
@@ -128,7 +142,9 @@
 %\setcounter{titleY}{80 - 3 * \@titlelines}
 %cover page
 \begin{textblock*}{\paperwidth}(-3.75cm,-15.7cm)%
-	\begin{overpic}[scale=.845]{cover.jpg} 
+%	\begin{overpic}[scale=2.0]{coverjpg.pdf}
+\begin{overpic}[scale=.845]{cover.jpg}
+%	\begin{overpic}[scale=1.77]{cover.png}
 		\put(15,90){\color{white}\large\bfseries\textsf{\MakeUppercase{\@thesistype}'S THESIS \the\year{}}}
 %		\put(15,90){\color{white}\Large\bfseries\textsf{BACHELOR'S THESIS \the\year{}}}
 %		\put(15,77){\colorbox{white}{\makebox(53,12){ % 77, 12 for single line title 
