@@ -111,6 +111,11 @@
 %	\newcommand{\student}[1]{\def \@student {#1} \def \@author {#1}}
 	\newcommand{\student}[2]{\def \@student {#1} \def \@studentemail {#2} \def \@author {#1 \\ {\normalsize \href{mailto:#2}{\texttt{#2}}}}}
 	\newcommand{\students}[4]{\def \@firststudent {#1} \def \@firststudentemail {#2} \def \@secondstudent {#3} \def \@secondstudentemail {#4}}
+\ifx\@secondstudent\empty%
+					\newcommand{\studentnames}[1]{\@student}
+\else%
+					\newcommand{\studentnames}[1]{\@firststudent{#1}\@secondstudent}
+\fi%					
 % \def \@author {{{#1} \\ {\normalsize \href{mailto:{#2}}{\texttt{{#2}}}}}}}% \and {{#3} \\ {\normalsize \href{mailto:#4}{\texttt{#4}}}}}}  	
 %	\newcommand{\students}[2]{\def \@firststudent {#1} \def \@secondstudent {#2} \def \@author {#1 \and #2}}
 	\newcommand{\thesisnumber}[1]{\def \@thesisnumber {#1}}
@@ -120,6 +125,8 @@
 	\newcommand{\twolinestitle}{\titlebox{74}{15}}% two lines title
 	\newcommand{\threelinestitle}{\titlebox{71}{18}}% three lines title
 	\newcommand{\fourlinestitle}{\titlebox{68}{21}}% four lines title
+
+
 
 	\company{}
 	\supervisor{}
@@ -157,7 +164,7 @@
 					{\fontsize{34}{40}\selectfont\bfseries\thetitle\ } \\
 						\vhrulefill{2pt} \\
 					\vspace{10pt}
-					{\Large\bfseries\textsf{\@student}}
+				    {\Large\bfseries\textsf{\studentnames{, }}}				
 				\end{flushleft}
 			\end{minipage}
 		}}}
@@ -190,21 +197,14 @@
 %\endgroup
 
 % now the archive page
-%\begin{titlepage}
 \center{\Huge \MakeUppercase{\@arbete}}\\
-%{\HugeKANDIDATARBETE}\\
 \center{\huge Datavetenskap}
 \vspace{150pt}
 \center{\huge \@thesisnumber}
 \vspace{50pt}
 \center{\huge\bfseries\thetitle}
 \vspace{100pt}
-\center{\Large\bfseries
-	\ifx\@secondstudent\empty \@student% 
-	\else \@firststudent, \@secondstudent% 
-	\fi 
-}%
-%\end{titlepage}
+\center{\Large\bfseries \studentnames{, }}
 
 \clearpage
 
