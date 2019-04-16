@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2019/04/01 v1.2 
+		[2019/04/16 v1.3 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -30,6 +30,8 @@
 \usepackage{pdfpages}
 \usepackage{ifoddpage}
 \usepackage{textpos}
+% for printing used files, as a debug option
+\usepackage{xparse,l3regex,longtable,array}
 
    \ifxetex
 		\usepackage[no-math]{fontspec}
@@ -102,6 +104,58 @@
 \RequirePackage{titling}
 
 \makeatletter
+
+% for listing packages
+\ExplSyntaxOn
+\NewDocumentCommand{\printfilelist}{}
+ {
+  \cleardoublepage
+  \section*{Used ~ packages}
+  \setlength{\LTleft}{0pt}
+  \pagestyle{empty}
+  \footnotesize
+  \begin{longtable}{@{} >{\ttfamily}l >{\raggedright}p{.6\textwidth} @{}}
+  \nobbz_print_filelist:
+  \end{longtable}
+ }
+
+\tl_new:N \l_nobbz_filelist_body_tl
+
+\cs_new_protected:Npn \nobbz_print_filelist:
+ {
+  \clist_map_inline:cn { @filelist }
+   {
+    \nobbz_print_fileinfo:n { ##1 }
+   }
+  \tl_use:N \l_nobbz_filelist_body_tl
+ }
+ 
+\cs_new_protected:Npn \nobbz_print_fileinfo:n #1
+ {
+  \regex_match:nnT { \.(sty|cls)\Z } { #1 }
+   {
+    \nobbz_print_pkginfo:n { #1 }
+   }
+ }
+
+\cs_new_protected:Npn \nobbz_print_pkginfo:n #1
+ {
+  \tl_put_right:Nx \l_nobbz_filelist_body_tl
+   {
+    \exp_not:n { #1 }
+    &
+    \exp_not:v { ver@#1 }
+    \exp_not:N \tabularnewline
+   }
+ }
+\ExplSyntaxOff
+%
+
+\DeclareOption{nofilelist}{\renewcommand{\printfilelist}{}}
+\DeclareOption*{\PackageWarning{cslthse-msc}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
+
+
     % custom commands
 	\newcommand{\company}[1]{\def \@company {#1}}
 	\newcommand{\supervisor}[1]{\def \@supervisor {#1}}
