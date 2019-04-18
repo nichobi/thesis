@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2019/04/16 v1.3 
+		[2019/04/17 v1.4 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -220,7 +220,7 @@
 				\color{LTHbronze}
 				\begin{flushleft}
 %					{\Huge\bfseries\thetitle\ } \\
-					{\fontsize{34}{40}\selectfont\bfseries\thetitle\ } \\
+					{\fontsize{34}{40}\selectfont\bfseries\thetitle\par}
 						\vhrulefill{2pt} \\
 					\vspace{10pt}
 				    {\Large\bfseries \studentnames}				
@@ -261,7 +261,7 @@
 \vspace{150pt}
 \center{\huge \@thesisnumber}
 \vspace{50pt}
-\center{\huge\bfseries\thetitle}
+\center{\huge\bfseries\thetitle\par}
 \vspace{100pt}
 \center{\Large\bfseries \studentnames}
 
