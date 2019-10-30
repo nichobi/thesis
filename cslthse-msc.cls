@@ -31,7 +31,11 @@
 \usepackage{ifoddpage}
 \usepackage{textpos}
 % for printing used files, as a debug option
-\usepackage{xparse,l3regex,longtable,array}
+\usepackage{xparse,longtable,array}
+%\usepackage{xparse,l3regex,longtable,array}
+\usepackage{expl3}
+\expandafter\def\csname ver@l3regex.sty\endcsname{} 
+
 
    \ifxetex
 		\usepackage[no-math]{fontspec}
@@ -144,7 +148,7 @@
    {
     \exp_not:n { #1 }
     &
-    \exp_not:v { ver@#1 }
+    \exp_not:v { ver@#1 }   
     \exp_not:N \tabularnewline
    }
  }
@@ -383,7 +387,7 @@
 \newcommand{\makebibliography}[1]{
 	\cleardoublepage
 	\phantomsection
-	\addcontentsline{toc}{chapter}{Bibliography}
+	\addcontentsline{toc}{chapter}{\bibname}
 	\bibliographystyle{plain}
 	\bibliography{#1}
-}
+}%

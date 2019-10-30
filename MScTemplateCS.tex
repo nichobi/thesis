@@ -12,6 +12,10 @@
 \usepackage[titletoc, header, page]{appendix}
 \usepackage{transparent}
 
+%\usepackage[backend=biber, style=alphabetic, sorting=ynt]{biblatex}
+
+%\addbibresource{myMSc.bib}
+
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
 
@@ -69,6 +73,8 @@ Leave a \textit{2cm} vertical space after the abstract and provide a few keyword
 %%%%%%%%%%
 
 \begin{document}
+\renewcommand{\bibname}{References}
+
 \makefrontmatter
 \chapter[Short on Formatting]{Formatting}
 Avoid empty spaces between \textit{chapter}-\textit{section}, \textit{section}-\textit{sub-section}. For instance, a very brief summary of the chapter would be one way of bridging the chapter heading and the first section of that chapter.
@@ -255,6 +261,7 @@ Occasionally these sections are intermingled, if this allows for a better presen
 
 \end{description}
 % Should use consistent formatting when it comes to Names ("FirstName LastName", or "F. LastName")
+%\printbibliography
 \makebibliography{MyMSc}
 
 \begin{appendices}
@@ -366,6 +373,5 @@ The following environments and tools were used to create this document:
 \fi
 \includepdf[pages={1}]{popsci/popsci.pdf}
 \end{appendices}
-
 
 \end{document}
