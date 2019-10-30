@@ -1,6 +1,6 @@
-%\documentclass[nofilelist]{cslthse-msc}
+\documentclass[nofilelist]{cslthse-msc}
 % to show a list of used packages at the end of the document, delete the nofilelist option
-\documentclass{cslthse-msc} 
+%\documentclass{cslthse-msc} 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
@@ -11,10 +11,6 @@
 \usepackage{graphicx}
 \usepackage[titletoc, header, page]{appendix}
 \usepackage{transparent}
-
-%\usepackage[backend=biber, style=alphabetic, sorting=ynt]{biblatex}
-
-%\addbibresource{myMSc.bib}
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
@@ -302,6 +298,11 @@ The following environments and tools were used to create this document:
 \end{itemize}
 
 \chapter{List of Changes}
+
+\subsubsection{Since 2019/10/30}
+\begin{itemize}
+\item Bibliography is now called References. This can be easily adjusted by changing \\ \verb+\renewcommand{\bibname}{References}+ after \verb+\begin{document}+.
+\end{itemize}
 
 \subsubsection{Since 2019/04/01}
 \begin{itemize}

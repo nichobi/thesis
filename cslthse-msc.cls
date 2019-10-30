@@ -6,7 +6,7 @@
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2019/04/17 v1.4 
+		[2019/10/30 v1.5 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
