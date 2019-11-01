@@ -236,7 +236,7 @@
 			\begin{flushright}
 				{\large\textsf{\textsc{ISSN 1650-2884}}}\\
 				\vspace{5pt}
-				{\large\textsf{\textsc{LU-CS-EX 2019-XX}}} \\ % Replace XX with the number from Birger Swahn	
+				{\large\textsf{\textsc{\@thesisnumber}}} \\ % Define thesis number in the main report file using the number from Birger Swahn - tack Niklas Lundstroem
 				\vspace{10pt}
 				{\large\textsf{\MakeUppercase{Department of Computer Science}}}\\
 				\vspace{5pt}
