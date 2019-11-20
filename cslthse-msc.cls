@@ -234,13 +234,13 @@
 		\put(1,9){\color{white}{
 			\begin{minipage}{0.5\textwidth}
 			\begin{flushright}
-				{\large\textsf{\textsc{ISSN 1650-2884}}}\\
+				{\textsf{\textsc{ISSN 1650-2884}}}\\
 				\vspace{5pt}
-				{\large\textsf{\textsc{\@thesisnumber}}} \\ % Define thesis number in the main report file using the number from Birger Swahn - tack Niklas Lundstroem
+				{\textsf{\textsc{\@thesisnumber}}} \\ % Define thesis number in the main report file using the number from Birger Swahn - tack Niklas Lundstroem
 				\vspace{10pt}
-				{\large\textsf{\MakeUppercase{Department of Computer Science}}}\\
+				{\textsf{\MakeUppercase{Department of Computer Science}}}\\
 				\vspace{5pt}
-				{\large\textsf{\MakeUppercase{LTH $\mid$ Lund University}}}\\
+				{\textsf{\MakeUppercase{LTH $\mid$ Lund University}}}\\
 			\end{flushright}
 			\end{minipage}		
 		}}
