@@ -1,12 +1,12 @@
 % cslthse-msc.cls
-% Copyright 2013 Flavius Gruian <flavius.gruian@cs.lth.se>
+% Copyright 2013-2020 Flavius Gruian <flavius.gruian@cs.lth.se>
 % 
 % Licensed under the GNU GPL version 3.0 or later.
 % See http://www.gnu.org/licenses/gpl.html
 %
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{cslthse-msc}
-		[2019/10/30 v1.5 
+		[2020/09/18 v1.6 
 		Masters Thesis Class, Department of Computer Science, Lund University]
 
 %\ExecuteOptions{12pt,a4paper,onecolumn, twoside, openright}
@@ -166,6 +166,8 @@
 	\newcommand{\supervisors}[2]{\def \@firstsupervisor {#1}  \def \@secondsupervisor {#2}}
 	\newcommand{\examiner}[1]{\def \@examiner {#1}}
 	\newcommand{\subtitle}[1]{\def \@subtitle {#1}}
+	\newcommand{\svensktitel}[1]{\def \@svensktitel {#1}}
+
 %	\newcommand{\student}[1]{\def \@student {#1} \def \@author {#1}}
 %	\newcommand{\student}[2]{\def \@student {#1} \def \@studentemail {#2} \def \@author {#1 \\ {\normalsize \href{mailto:#2}{\texttt{#2}}}}}
 	\newcommand{\student}[2]{\def \@student {#1} \def \@studentemail {#2}}
@@ -196,6 +198,7 @@
 	\supervisors{}{}
 	\examiner{}
 	\subtitle{}
+	\svensktitel{}
 	\student{}{}
 	\students{}{}{}{}	
 	\thesistype{Master}{Examensarbete}
@@ -266,7 +269,9 @@
 \center{\huge \@thesisnumber}
 \vspace{50pt}
 \center{\huge\bfseries\thetitle\par}
-\vspace{100pt}
+\vspace{20pt}
+\center{\huge \@svensktitel\par}
+\vspace{60pt}
 \center{\Large\bfseries \studentnames}
 
 \clearpage

@@ -20,12 +20,13 @@
 %\student{Flavius Gruian}{Flavius.Gruian@cs.lth.se}
 \students{Flavius Gruian}{Flavius.Gruian@cs.lth.se}{Camilla Lekebjer}{Camilla.Lekebjer@cs.lth.se}
 
-\thesisnumber{LU-CS-EX: 2019-XX} % Birger Swahn will provide this number to you, once the thesis is ready for publication
+\thesisnumber{LU-CS-EX: 2023-79} % Magic Number! Do not change unless Birger Swahn asks you to do so!
 % default is Master. Uncomment the following for "kandidatarbete"/Bachelor's thesis
 %\thesistype{Bachelor}{Kandidatarbete}
 
 %\title{Formatting a Master's Thesis}
 \title{Formatting a Master's Thesis and a bunch of other things that are not really needed in here}
+\svensktitel{Infoga den Svenska titel här!}
 
 %\onelinetitle
 %\twolinestitle
@@ -298,6 +299,12 @@ The following environments and tools were used to create this document:
 \end{itemize}
 
 \chapter{List of Changes}
+
+\subsubsection{Since 2020/09/18}
+\begin{itemize}
+\item Added the Swedish title displayed on page 3. Use \verb+\svensktitel{...}+ command to set it.
+\item Converted the default LU-CS-EX number to a magic number, \verb+2023-79+, easy to find and change in PDF with \verb+changepagestring.pl+; this is a \verb+perl+ command line utility found in \verb+CAM::PDF+ module -- but only works on some PDFs (e.g. generated with \verb+pdflatex+) but not others (e.g. \verb+xelatex+) \textbf{[CS internal use]}
+\end{itemize}
 
 \subsubsection{Since 2019/10/30}
 \begin{itemize}
