@@ -33,9 +33,27 @@
   \href{mailto:niklas.fors@cs.lth.se}{niklas.fors@cs.lth.se}
 
 \section{Background}
+In programming languages there are many types of data, and for any real world use case there will be constraints upon these types, such as what types of input a function can contain.
+Type checking is the method of verifying, either at runtime (dynamic checking) or compile time (static checking), that these constraints are held.
+
+JastAdd is a meta-compilation system, allowing one to work with and extend abstract syntax trees with great flexibility and is extensively used within the SDE group at LTH.
+However, implementing a type checker in JastAdd by hand currently requires a lot of boilerplate code, slowing down iteration.
+Typing rules offer a condensed, standardised syntax for defining simple languages, allowing fast iterations with minimal work, but these rules then typically need to be implemented by hand.
 
 
 \section{Project description}
+% Build JastAdd Specification from Typing Rules
+% Typing rules are an efficient way for expressing flow-insensitive program analyses.  The goal for this thesis project is to automatically translate typing rules into JastAdd rules, automatically selecting different type inference schemes (monomorphic, polymorphic, syntax-directed or not, ...).
+
+The goal of this project is to translate the concisely formatted typing rules into a working type-checker in JastAdd.
+We'll start with a basic implementation able to handle simple syntax-directed rules.
+Once this is working, there are two possible directions to take the project.
+One is to support object-oriented languages, by adding support for subtyping and ad hoc polymorphism.
+The other is to support a more functional approach by implementing a Hindley-Milner style type system.
+Which of these routes to take will be decided based on the experience of implementing the basic system.
+
+Research questions include what language features we can support and what approaches we can use to translate different cases and how best to leverage JastAdd's capabilities.
+
 % deliniate scope, syntax-directed rules, need not be fully self-contained
 % eventually break out into one of non syntax-directed rules Hindley-Milner
 % or subtyping and adhoc polymorphism
@@ -50,9 +68,31 @@
 
 
 \section{Previous work}
+\begin{itemize}
+  \item
+    André Pacak, Sebastian Erdweg, and Tamás Szabó. 2020. A systematic approach to deriving incremental type checkers. Proc. ACM Program. Lang. 4, OOPSLA, Article 127 (November 2020), 28 pages. https://doi.org/10.1145/3428195 \\
+    \url{https://szabta89.github.io/publications/inca-typechecking.pdf} \\
+    A paper about implementing a compiler, capable of deriving incremental type checking from typing rules.
+    Similar goal to ours, but with a significantly different compilation target, meaning we will likely differ in architecture and what trade-offs are made.
+
+  \item
+    Mikael Pettersson. 1996. A Compiler for Natural Semantics. In Proceedings of the 6th International Conference on Compiler Construction (CC '96). Springer-Verlag, Berlin, Heidelberg, 177–191. \\
+    \url{https://link.springer.com/chapter/10.1007/3-540-61053-7\_61} \\
+
+  \item
+    Grigore Roșu, Traian Florin Șerbănută. An overview of the K semantic framework.
+The Journal of Logic and Algebraic Programming, Volume 79, Issue 6, 2010, Pages 397-434, ISSN 1567-8326, https://doi.org/10.1016/j.jlap.2010.03.012. \\
+    \url{https://www.sciencedirect.com/science/article/pii/S1567832610000160} \\
+
+\end{itemize}
 
 
 \section{Evaluation}
+The first step of evaluating the project is to see what language features it supports.
+Once the program is capable of compiling a basic language, we can also compare it to existing handwritten (or written ourselves) JastAdd specifications for those same languages.
+Here we could evaluate the size of the finished specification as well as the performance of the type checking.
+
+An additional point of comparison is the Datalog paper, to which we could compare supported features as well as output size and performance.
 %  Case studies, implementation possible by hand or already finished implementations
 %  Compare with handwritten implementations:
 %    - Spec size
@@ -67,5 +107,16 @@
 %   ...
 %   - Evaluation
 %   - Finalise the thesis document (collect bullet points throughout and organise them but don't write text)
+
+The timeline for the project is spread out over 20 weeks, from now until the beginning of June.
+The following steps are planned:
+\begin{itemize}
+  \item Define an input language and handle parsing
+  \item Implement the basics required for simply typed lambda calculus
+  \item Implement as many additional language features as time allows
+  \item Evaluation
+  \item Finalise the thesis document, starting around the end of April %(collect bullet points throughout and organise them but don't write text)
+\end{itemize}
+
 
 \end{document}
