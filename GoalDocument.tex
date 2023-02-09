@@ -34,9 +34,9 @@
 
 \section{Background}
 In programming languages there are many types of data, and for any real world use case there will be constraints upon these types, such as what types of input a function can contain.
-Type checking is the method of verifying, either at runtime (dynamic checking) or compile time (static checking), that these constraints are held.
+Type checking is a method of verifying, either at runtime (dynamic checking) or compile time (static checking), that these constraints are held.
 
-JastAdd is a meta-compilation system, allowing one to work with and extend abstract syntax trees with great flexibility and is extensively used within the SDE group at LTH.
+JastAdd is a meta-compilation system, allowing one to work with and extend abstract syntax trees with great flexibility. % and is extensively used within the SDE group at LTH.
 However, implementing a type checker in JastAdd by hand currently requires a lot of boilerplate code, slowing down iteration.
 Typing rules offer a condensed, standardised syntax for defining simple languages, allowing fast iterations with minimal work, but these rules then typically need to be implemented by hand.
 
@@ -46,7 +46,7 @@ Typing rules offer a condensed, standardised syntax for defining simple language
 % Typing rules are an efficient way for expressing flow-insensitive program analyses.  The goal for this thesis project is to automatically translate typing rules into JastAdd rules, automatically selecting different type inference schemes (monomorphic, polymorphic, syntax-directed or not, ...).
 
 The goal of this project is to translate the concisely formatted typing rules into a working type-checker in JastAdd.
-We'll start with a basic implementation able to handle simple syntax-directed rules.
+We will start with a basic implementation able to handle simple syntax-directed rules.
 Once this is working, there are two possible directions to take the project.
 One is to support object-oriented languages, by adding support for subtyping and ad hoc polymorphism.
 The other is to support a more functional approach by implementing a Hindley-Milner style type system.
@@ -67,7 +67,7 @@ Research questions include what language features we can support and what approa
 % Why compile to JastAdd?
 
 
-\section{Previous work}
+\section{Related work}
 \begin{itemize}
   \item
     André Pacak, Sebastian Erdweg, and Tamás Szabó. 2020. A systematic approach to deriving incremental type checkers. Proc. ACM Program. Lang. 4, OOPSLA, Article 127 (November 2020), 28 pages. https://doi.org/10.1145/3428195 \\
@@ -88,11 +88,11 @@ The Journal of Logic and Algebraic Programming, Volume 79, Issue 6, 2010, Pages 
 
 
 \section{Evaluation}
-The first step of evaluating the project is to see what language features it supports.
+The first step of evaluating the project is to see what language features it supports. % What are the challenges? What properties of typesystems make them difficult/easy to embed? Efficiency, spec size
 Once the program is capable of compiling a basic language, we can also compare it to existing handwritten (or written ourselves) JastAdd specifications for those same languages.
-Here we could evaluate the size of the finished specification as well as the performance of the type checking.
+Here we will evaluate the size of the finished specification as well as the performance of the type checking.
 
-An additional point of comparison is the Datalog paper, to which we could compare supported features as well as output size and performance.
+An additional point of comparison is Pacak et al.'s \emph{A systematic approach to deriving incremental type checkers}, to which we will compare supported features as well as output size and performance.
 %  Case studies, implementation possible by hand or already finished implementations
 %  Compare with handwritten implementations:
 %    - Spec size
