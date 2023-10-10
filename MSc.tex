@@ -54,12 +54,8 @@
 %}
 
 \theabstract{
-This document describes the Master's Thesis format for the theses carried out at
-the Department of Computer Science, Lund University.
-
-Your abstract should capture, in English, the whole thesis with focus on the problem and solution in 150 words. It should be placed on a separate right-hand page, with an additional \textit{1cm} margin on both left and right. Avoid acronyms, footnotes, and references in the abstract if possible.
-
-Leave a \textit{2cm} vertical space after the abstract and provide a few keywords relevant for your report. Use five to six words, of which at most two should be from the title.
+%Your abstract should capture, in English, the whole thesis with focus on the problem and solution in 150 words. It should be placed on a separate right-hand page, with an additional \textit{1cm} margin on both left and right. Avoid acronyms, footnotes, and references in the abstract if possible.
+%Leave a \textit{2cm} vertical space after the abstract and provide a few keywords relevant for your report. Use five to six words, of which at most two should be from the title.
 }
 
 \keywords{MSc, BSc, template, report, style, structure}
@@ -79,16 +75,62 @@ Leave a \textit{2cm} vertical space after the abstract and provide a few keyword
 % Define the problem you are solving (or trying to solve).
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge? How is the work divided between the co-authors? (This part is essential to pinpoint individual work. For theses with two authors, it is compulsory to identify which author has contributed with which part, both with respect to the work and the report.)
 % Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
+\section{Research questions}
+\begin{itemize}
+\end{itemize}
 
-\chapter{Approach} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
+\chapter{Background}
+%\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
+\section{Type systems}
+\subsection{Data types}
+\subsection{Typechecking}
+\subsubsection{Dynamic Typechecking}
+\subsubsection{Static Typechecking}
+\section{Reference Attribute Grammars}
+\subsection{Reference Attribute Grammars}
+\subsection{JastAdd}
+
+\chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
+
+\section{Architecture}
+
+\subsection{Typing rule definition}
+Custom DSL
+ASCII representation of BNF (is it BNF?)
+\subsubsection{Language}
+Figure of example BNF (from Pierce?) and ASCII representation
+\subsubsection{Parser}
+\subsubsection{Abstract syntax tree}
+
+\subsection{Typechecker template}
+For ease of use,=
+\subsubsection{Parser}
+For testing purposes, our outputted typechecker comes with a simple tree-based parser.
+Reflection-based parsing
+\subsubsection{Project files}
+\subsubsection{Typechecking aspect}
+
+\subsection{Output typechecker}
+\subsubsection{Tree-representation}
+\subsubsection{Typechecking algorithm}
+Simple algorithm
+Recursive
+\subsubsection{Error handling}
+
+
 \section{Method} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
-\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
 \section{Implementation} % if your work involved building an artefact/implementation, give the details here. Note, that this should not, as a rule, be a chronological description of your efforts, but a view of the result. There is a place for insights and lamentation later on in the report, in the Discussion section.
-\section{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
+
+\chapter{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
 \section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
 \section{Results} % contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
-\section{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
+\subsection{Input/output examples, with descriptions}
+
+\chapter{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
 % Occasionally these sections are intermingled, if this allows for a better presentation of your work. However, try to distinguish between measurements or hard data (results) and extrapolations, interpretations, or speculations (discussion).
+\section{Supported features}
+\section{Future work}
+\section{Development learnings}
 
 \chapter{Conclusions} % should summarize your findings and possible improvements or recommendations.
 
