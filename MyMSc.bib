@@ -1,109 +1,67 @@
-%% This BibTeX bibliography file was created using BibDesk.
-%% http://bibdesk.sourceforge.net/
+% == Previous work ==
+@article{10.1145/3428195,
+  author = {Pacak, Andr\'{e} and Erdweg, Sebastian and Szab\'{o}, Tam\'{a}s},
+  title = {A Systematic Approach to Deriving Incremental Type Checkers},
+  year = {2020},
+  issue_date = {November 2020},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {4},
+  number = {OOPSLA},
+  url = {https://doi.org/10.1145/3428195},
+  doi = {10.1145/3428195},
+  abstract = {Static typing can guide programmers if feedback is immediate. Therefore, all major IDEs incrementalize type checking in some way. However, prior approaches to incremental type checking are often specialized and hard to transfer to new type systems. In this paper, we propose a systematic approach for deriving incremental type checkers from textbook-style type system specifications. Our approach is based on compiling inference rules to Datalog, a carefully limited logic programming language for which incremental solvers exist. The key contribution of this paper is to discover an encoding of the infinite typing relation as a finite Datalog relation in a way that yields efficient incremental updates. We implemented the compiler as part of a type system DSL and show that it supports simple types, some local type inference, operator overloading, universal types, and iso-recursive types.},
+  journal = {Proc. ACM Program. Lang.},
+  month = {nov},
+  articleno = {127},
+  numpages = {28},
+  keywords = {type system transformation, datalog, incremental type checking}
+}
+
+@InProceedings{10.1007/3-540-61053-7_61,
+  author="Pettersson, Mikael",
+  editor="Gyim{\'o}thy, Tibor",
+  title="A compiler for natural semantics",
+  booktitle="Compiler Construction",
+  year="1996",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="177--191",
+  abstract="Natural semantics is a formalism used for specifying both semantics and implementations of programming languages. Until recently, no practical implementation of the formalism existed. We have defined the Relational Meta-Language, RML, as an executable specification language for natural semantics. After a brief outline of the language, we describe the compilation strategy used by our rml2c compiler: transformations are applied to minimize non-determinism, and a continuationpassing style form is produced and simplified. Finally the CPS is emitted as low-level C code, using an efficient technique for implementing tailcalls. We also present performance measurements that support our choice of compilation strategy.",
+  isbn="978-3-540-49939-8"
+}
+
+# ==Background==
+@Inbook{Hedin2011,
+  author="Hedin, G{\"o}rel",
+  editor="Fernandes, Jo{\~a}o M.
+  and L{\"a}mmel, Ralf
+  and Visser, Joost
+  and Saraiva, Jo{\~a}o",
+  title="An Introductory Tutorial on JastAdd Attribute Grammars",
+  bookTitle="Generative and Transformational Techniques in Software Engineering III: International Summer School, GTTSE 2009, Braga, Portugal, July 6-11, 2009. Revised Papers",
+  year="2011",
+  publisher="Springer Berlin Heidelberg",
+  address="Berlin, Heidelberg",
+  pages="166--200",
+  abstract="JastAdd is an open-source system for generating compilers and other language-based tools. Its declarative specification language is based on reference attribute grammars and object-orientation. This allows tools to be implemented as composable extensible modules, as exemplified by JastAddJ, a complete extensible Java compiler. This tutorial gives an introduction to JastAdd and its core attribute grammar mechanisms, and how to use them when solving key problems in building language-based tools. A simple state machine language is used as a running example, showing the essence of name analysis, adding graphs to the abstract syntax tree, and computing circular properties like reachability. Exercises are included, and code for the examples is available online.",
+  isbn="978-3-642-18023-1",
+  doi="10.1007/978-3-642-18023-1_4",
+  url="https://doi.org/10.1007/978-3-642-18023-1_4"
+}
+
+@article{RAG,
+  title = "Reference Attributed Grammars",
+  abstract = "An object-oriented extension to canonical attribute grammars is described, permitting attributes to be references to arbitrary nodes in the syntax tree, and attributes to be accessed via the reference attributes. Important practical problems such as name and type analysis for object-oriented languages can be expressed in a concise and modular manner in these grammars, and an optimal evaluation algorithm is available. An extensive example is given, capturing all the key constructs in object-oriented languages including block structure, classes, inheritance, qualified use, and assignment compatibility in the presence of subtyping. The formalism and algorithm have been implemented in APPLAB, an interactive language development tool.",
+  author = "G{\"o}rel Hedin",
+  year = "2000",
+  language = "English",
+  volume = "24",
+  pages = "301--317",
+  journal = "Informatica",
+  issn = "0868-4952",
+  publisher = "Slovenian Society Informatika",
+  number = "3",
+}
 
 
-%% Created for Flavius Gruian at 2013-02-14 14:42:05 +0100 
-
-
-%% Saved with string encoding Unicode (UTF-8) 
-
-
-
-@misc{OGSW,
-	Author = {{Commonwealth Forestry Association}},
-	Date-Added = {2013-02-14 13:39:22 +0000},
-	Date-Modified = {2013-02-14 13:42:01 +0000},
-	Note = {http://www.cfa-international.org/ONGSWfinish.html},
-	Title = {On-line Guide to Scientific Writing}}
-
-@misc{subjectverb,
-	Author = {{yourdictionary.com}},
-	Date-Added = {2013-02-12 12:37:47 +0000},
-	Date-Modified = {2013-02-12 12:39:25 +0000},
-	Note = {\url{http://grammar.yourdictionary.com/sentences/20-Rules-of-subject-verb-agreement.html}},
-	Title = {20 Rules of Subject Verb Agreement}}
-
-@misc{yalesentences,
-	Author = {{Yale Graduate Writing Center}},
-	Date-Added = {2013-02-12 12:12:48 +0000},
-	Date-Modified = {2013-02-12 12:14:29 +0000},
-	Note = {\url{http://www.yale.edu/graduateschool/writing/forms/The%20Most%20Common%20Sentence%20Structure%20Problems.pdf}},
-	Title = {The Most Common Sentence Structure Problems}}
-
-@misc{shortstyleguide,
-	Author = {University of Washington},
-	Date-Added = {2013-02-12 11:53:07 +0000},
-	Date-Modified = {2013-02-12 11:54:50 +0000},
-	Note = {\url{http://www.psych.uw.edu/writingcenter/writingguides/pdf/style.pdf}},
-	Title = {Style Points for Scientific Writing}}
-
-@book{few2012show,
-	Author = {Few, S.},
-	Date-Added = {2013-02-11 18:23:27 +0000},
-	Date-Modified = {2013-02-11 18:23:27 +0000},
-	Isbn = {9780970601971},
-	Publisher = {Analytics Press},
-	Title = {Show Me the Numbers: Designing Tables and Graphs to Enlighten},
-	Url = {http://books.google.se/books?id=1xiHLgEACAAJ},
-	Year = {2012},
-	Bdsk-Url-1 = {http://books.google.se/books?id=1xiHLgEACAAJ}}
-
-@book{heffernan2000writing,
-	Author = {Heffernan, J.A.W. and Lincoln, J.E. and Atwill, J.},
-	Date-Added = {2013-02-11 18:20:07 +0000},
-	Date-Modified = {2013-02-11 18:20:07 +0000},
-	Isbn = {9780393974263},
-	Lccn = {00058242},
-	Publisher = {W.W. Norton},
-	Title = {Writing: A College Handbook},
-	Url = {http://books.google.se/books?id=4ZI2HAAACAAJ},
-	Year = {2000},
-	Bdsk-Url-1 = {http://books.google.se/books?id=4ZI2HAAACAAJ}}
-
-@misc{CTAN,
-	Author = {CTAN},
-	Date-Added = {2013-02-11 16:17:41 +0000},
-	Date-Modified = {2013-02-11 16:33:03 +0000},
-	Lastchecked = {February 11, 2013},
-	Note = {\url{http://www.ctan.org}},
-	Title = {Comprehensive TeX Archive Network},
-	Bdsk-Url-1 = {http://www.ctan.org}}
-
-@misc{fontspec,
-	Author = {Will Robertson and Khaled Hosny},
-	Date-Added = {2013-02-11 16:11:24 +0000},
-	Date-Modified = {2013-02-11 16:30:26 +0000},
-	Keywords = {latex, fontspec},
-	Lastchecked = {February 11, 2013},
-	Month = {May},
-	Note = {\url{http://ctan.uib.no/macros/latex/contrib/fontspec/fontspec.pdf}},
-	Title = {The fontspec package},
-	Urldate = {February 11, 2013},
-	Year = {2012},
-	Bdsk-Url-1 = {http://ctan.uib.no/macros/latex/contrib/fontspec/fontspec.pdf}}
-
-@book{goossens93,
-	Address = {Reading, Massachusetts},
-	Author = {Michel Goossens and Frank Mittelbach and Alexander Samarin},
-	Date-Added = {2013-02-11 13:58:46 +0000},
-	Date-Modified = {2013-02-11 13:58:46 +0000},
-	Publisher = {Addison-Wesley},
-	Title = {The LaTeX Companion},
-	Year = {1993}}
-
-@book{Tufte:1986,
-	Address = {Cheshire, CT, USA},
-	Author = {Tufte, Edward R.},
-	Date-Added = {2013-02-11 13:52:27 +0000},
-	Date-Modified = {2013-02-11 13:52:38 +0000},
-	Isbn = {0-9613921-0-X},
-	Publisher = {Graphics Press},
-	Title = {The visual display of quantitative information},
-	Year = {1986}}
-
-@article{gavin2002brief,
-	Author = {Gavin, H.P.},
-	Date-Added = {2013-02-11 13:12:46 +0000},
-	Date-Modified = {2013-02-11 13:12:46 +0000},
-	Title = {A brief LATEX tutorial.},
-	Year = {2002}}

@@ -2,7 +2,7 @@
 % to show a list of used packages at the end of the document, delete the nofilelist option
 %\documentclass{cslthse-msc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\usepackage[british]{babel}
 \usepackage{amsmath}
 %\usepackage{amsfonts}
 %%\usepackage{amssymb}
@@ -25,7 +25,7 @@
 %\thesistype{Bachelor}{Kandidatarbete}
 
 %\title{Formatting a Master's Thesis}
-\title{Typechecker Generation using Reference Attribute Grammars}
+\title{Type Checker Generation using Reference Attribute Grammars}
 \svensktitel{Infoga den Svenska titeln här!}
 
 %\onelinetitle
@@ -72,20 +72,34 @@
 \makefrontmatter
 \chapter{Introduction} % should give the background of your work. Important parts to cover:
 % Give the context of your work, have a short introduction to the area.
+While writing software, developers often make mistakes.
+Catching these mistakes as soon as possible has become 
+Type checkers are one of the most common static checking methods, but creating a new type checker is often an arduous process, requiring large amounts of complex code.
+Furthermore, making changes to the typing rules of a language can require extensive rewrites in many different parts of the type checker's codebase.
+% This can hinder experimentation
+
+In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules.
+
+
 % Define the problem you are solving (or trying to solve).
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge? How is the work divided between the co-authors? (This part is essential to pinpoint individual work. For theses with two authors, it is compulsory to identify which author has contributed with which part, both with respect to the work and the report.)
-% Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
 \section{Research questions}
 \begin{itemize}
+  \item What kinds of typing rules can we translate through RAG?
+  \item What approach?
+  \item What are the potential issues of translating typing rules into JastAdd-based RAGs?
 \end{itemize}
+
+\section{Related work} % Maybe move to discussion?
+% Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
 
 \chapter{Background}
 %\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
 \section{Type systems}
 \subsection{Data types}
-\subsection{Typechecking}
-\subsubsection{Dynamic Typechecking}
-\subsubsection{Static Typechecking}
+\subsection{Type checking}
+\subsubsection{Dynamic Type checking}
+\subsubsection{Static Type checking}
 \section{Reference Attribute Grammars}
 \subsection{Reference Attribute Grammars}
 \subsection{JastAdd}
@@ -93,52 +107,76 @@
 \chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
 
 \section{Architecture}
-
+Overview
 \subsection{Typing rule definition}
 Custom DSL
-ASCII representation of BNF (is it BNF?)
+ASCII representation of natural deduction %BNF (is it BNF?)
 \subsubsection{Language}
-Figure of example BNF (from Pierce?) and ASCII representation
+Figure of example natural deduction rules (from Pierce?) and ASCII representation
 \subsubsection{Parser}
 \subsubsection{Abstract syntax tree}
 
-\subsection{Typechecker template}
-For ease of use,=
+\subsection{Type checker template}
+For ease of use the compiler will output, in addition to the type checker, a complete runnable Gradle project.
+It can parse simplified tree-representations of programs, and utilise these to perform the type checking.
 \subsubsection{Parser}
-For testing purposes, our outputted typechecker comes with a simple tree-based parser.
+For testing purposes, our outputted type checker comes with a simple tree-based parser.
 Reflection-based parsing
 \subsubsection{Project files}
-\subsubsection{Typechecking aspect}
+\subsubsection{Type checking aspect}
 
-\subsection{Output typechecker}
+\subsection{Output type checker}
 \subsubsection{Tree-representation}
-\subsubsection{Typechecking algorithm}
+\subsubsection{Type checking algorithm}
+Generate code for each node and typing rule
 Simple algorithm
 Recursive
 \subsubsection{Error handling}
 
 
-\section{Method} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
+\section{Method (remove this?)} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
+
+
+
+\cite{Hedin2011}
 \section{Implementation} % if your work involved building an artefact/implementation, give the details here. Note, that this should not, as a rule, be a chronological description of your efforts, but a view of the result. There is a place for insights and lamentation later on in the report, in the Discussion section.
 
 \chapter{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
-\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
+%\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
 \section{Results} % contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
-\subsection{Input/output examples, with descriptions}
+\subsection{Input/output examples, with descriptions} %TODO
+Bool language
+Type variables
+\section{Research questions}
+\subsection{Research q 1}
+\subsection{Research q 2}
+\subsection{Research q 3}
+List of challenges % TODO
+  Splitting code between multiple JastAdd components (and java) can get messy
+  Using JastAdd simultaneously as a library and a build component
+
 
 \chapter{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
 % Occasionally these sections are intermingled, if this allows for a better presentation of your work. However, try to distinguish between measurements or hard data (results) and extrapolations, interpretations, or speculations (discussion).
 \section{Supported features}
-\section{Future work}
 \section{Development learnings}
 
 \chapter{Conclusions} % should summarize your findings and possible improvements or recommendations.
+\section{Summary of findings}
+\section{Future work}
+Improved error handling
+Check for completeness of rules
+Verify rules against AST
+Handle multiple rules for the same node (add(int, int): int, add(double, double): double)
+Better support for numbers, strings, etc.
+
 
 % Should use consistent formatting when it comes to Names ("FirstName LastName", or "F. LastName")
 %\printbibliography
 \makebibliography{MyMSc} % is a must in a scientific report. {\LaTeX} and \texttt{bibtex} offer great support for  handling references and automatically generating bibliographies.
 
 \begin{appendices} %should contain lengthy details of the experimental setup, mathematical proofs, code download information, and shorter code snippets. Avoid longer code listings. Source code should rather be made available for download on a website or on-line repository of your choosing.
+Git repository link
 
 % display used packages information unless noflielist is used in the cslthse-msc package option
 \printfilelist

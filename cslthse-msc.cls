@@ -394,6 +394,7 @@
 	\cleardoublepage
 	\phantomsection
 	\addcontentsline{toc}{chapter}{\bibname}
-	\bibliographystyle{plain}
+  %\bibliographystyle{plain}
+  \bibliographystyle{unsrt} % Order references by appearance
 	\bibliography{#1}
 }%
