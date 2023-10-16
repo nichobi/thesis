@@ -11,6 +11,8 @@
 \usepackage{graphicx}
 \usepackage[titletoc, header, page]{appendix}
 \usepackage{transparent}
+\usepackage{tikz}
+\usetikzlibrary{fit,positioning,shapes.geometric}
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
@@ -108,6 +110,57 @@ In this thesis we examine the feasibility of automating the writing of type chec
 
 \section{Architecture}
 Overview
+
+\noindent\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  every node/.style = {draw=black, rounded corners, align=center},
+  every path/.style = {draw, -latex}
+                          ]
+  \node (typerules)                               {Object language typing\\ rules definition};
+  \node (trparsing) [right=of typerules, ellipse] {scan,\\parse,\\build};
+  \node (trparser)  [above=of trparsing]          {Typing rule parser};
+  \node (trast)     [right=of trparsing]          {Typing rules AST};
+
+  \node (typecheckgen) [below=of trast, ellipse] {
+    \textbf{Type checker generation}\\
+    - Link rules and language AST\\
+    - Fill in template
+  };
+
+  \node (olast)     [below=of typerules] {Object language AST};
+  \node (inputprog) [below=of olast]     {Input program};
+
+  \node (outputparsing)      [below=of typecheckgen, ellipse]  {Scan,\\parse,\\build};
+  \node (outputtypechecking) [right=of outputparsing, ellipse] {Perform\\typechecking};
+  \node (typeerrors)         [right=of outputtypechecking]     {List of type errors};
+
+  \node (template) [right=of typecheckgen] {
+    \textbf{Type checker template}\\
+    - Scanner, parser, builder\\
+    - Project files\\
+    - Type checking algorithm\\
+  };
+
+  \node (userinput)   [dashed, fill=none, fit=(typerules) (olast)]                  {};
+  \node               [above, draw=none] at (userinput.north)                       {User input};
+  \node (typechecker) [dashed, fill=none, fit=(outputparsing) (outputtypechecking)] {};
+  \node               [above, draw=none] at (typechecker.north)                     {Type checker};
+
+  \draw   (typerules)  to  (trparsing);
+  \draw   (trparser)  to  (trparsing);
+  \draw   (trparsing)  to  (trast);
+  \draw   (trast)  to  (typecheckgen);
+  \draw   (olast)  to  (typecheckgen);
+  \draw   (olast)  to  (outputparsing);
+  \draw   (outputparsing)  to  (outputtypechecking);
+  \draw   (outputtypechecking)  to  (typeerrors);
+  \draw   (typecheckgen)  to  (typechecker);
+  \draw   (inputprog)  to  (outputparsing);
+  \draw   (template)  to  (typecheckgen);
+
+\end{tikzpicture}
+}
+
 \subsection{Typing rule definition}
 Custom DSL
 ASCII representation of natural deduction %BNF (is it BNF?)
