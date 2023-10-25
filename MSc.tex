@@ -12,6 +12,7 @@
 \usepackage[titletoc, header, page]{appendix}
 \usepackage{transparent}
 \usepackage{tikz}
+\usepackage{enumitem}
 \usetikzlibrary{fit,positioning,shapes.geometric}
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
@@ -113,55 +114,80 @@ In this thesis we examine the feasibility of automating the writing of type chec
 \section{Architecture}
 Overview
 
-\noindent\resizebox{\textwidth}{!}{%
-\begin{tikzpicture}[
-  every node/.style = {draw=black, rounded corners, align=center},
-  every path/.style = {draw, -latex}
-                          ]
-  \node (typerules)                               {Object language typing\\ rules definition};
-  \node (trparsing) [right=of typerules, ellipse] {scan,\\parse,\\build};
-  \node (trparser)  [above=of trparsing]          {Typing rule parser};
-  \node (trast)     [right=of trparsing]          {Typing rules AST};
+\begin{figure}[]
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+      every node/.style = {draw=black, rounded corners, align=center},
+      every path/.style = {draw, -latex}
+    ]
+    \node (typerules)                               {Typing rules\\definition};
+    \node (trparsing) [right=of typerules, ellipse] {Scan,\\parse,\\build};
+    \node (trparser)  [above=of trparsing]          {Typing rule parser};
+    \node (trast)     [right=of trparsing]          {Typing rules AST};
 
-  \node (typecheckgen) [below=of trast, ellipse] {
-    \textbf{Type checker generation}\\
-    - Link rules and language AST\\
-    - Fill in template
-  };
+    %\node (typecheckgen) [below=of trast, ellipse, text width=5cm] {
+    %  \textbf{Type checker generation}\\
+    %  \hrule
+    %  \begin{itemize}[noitemsep,topsep=2pt]
+    %    \item Copy template
+    %    \item Generate type checker from typing rules
+    %  \end{itemize}
+    %};
+    \node (typecheckgen)       [below=of trast, ellipse] {Generate\\type checker};
+    \node (typingrulecompiler) [right=of trast]          {Typing rule\\compiler (\ref{typingrulecompiler})};
+    \node (typechecker)        [below=of typecheckgen]   {Type checker};
 
-  \node (olast)     [below=of typerules] {Object language AST};
-  \node (inputprog) [below=of olast]     {Input program};
+    \node (olast)     [below=of typerules] {AST definition};
 
-  \node (outputparsing)      [below=of typecheckgen, ellipse]  {Scan,\\parse,\\build};
-  \node (outputtypechecking) [right=of outputparsing, ellipse] {Perform\\typechecking};
-  \node (typeerrors)         [right=of outputtypechecking]     {List of type errors};
+    \node (outputtypechecking) [below=of typechecker, ellipse] {Perform\\typechecking};
+    \node (inputast)           [left=of outputtypechecking]    {Input program\\AST};
+    \node (outputparsing)      [left=of inputast, ellipse]     {Scan,\\parse,\\build};
+    \node (typeerrors)         [right=of outputtypechecking]   {Type errors};
+    \node (inputprog)          [left=of outputparsing]         {Input program};
 
-  \node (template) [right=of typecheckgen] {
-    \textbf{Type checker template}\\
-    - Scanner, parser, builder\\
-    - Project files\\
-    - Type checking algorithm\\
-  };
+    %\node (template) [below=of inputast, text width=6cm] {
+    %  \textbf{Type checker template}\\
+    %  \hrule
+    %  \begin{itemize}[noitemsep,topsep=2pt]
+    %    \item Scanner, parser, builder
+    %    \item Project files
+    %    \item Type checking algorithm (\ref{typecheckingalgorithm})
+    %  \end{itemize}
+    %};
+    \node (templateparser)        [below=of outputparsing]                               {Tree-based\\parser};
+    \node (templateprojectfiles)  at (inputast |- templateparser)                        {Project files};
+    \node (typecheckingalgorithm) at (outputtypechecking |- templateparser)              {Type check\\algorithm};
+    \node (template)              [dashed, fit=(templateparser) (typecheckingalgorithm)] {};
+    \node                         [above, draw=none] at (template.north)                 {Template};
 
-  \node (userinput)   [dashed, fill=none, fit=(typerules) (olast)]                  {};
-  \node               [above, draw=none] at (userinput.north)                       {User input};
-  \node (typechecker) [dashed, fill=none, fit=(outputparsing) (outputtypechecking)] {};
-  \node               [above, draw=none] at (typechecker.north)                     {Type checker};
+    \node (userinput)   [dashed, fill=none, fit=(typerules) (olast)]                  {};
+    \node               [above, draw=none] at (userinput.north)                       {Object language\\static semantics};
+    %\node (typechecker) [dashed, fill=none, fit=(outputparsing) (outputtypechecking)] {};
+    %\node               [above, draw=none] at (typechecker.north)                     {Type checker};
 
-  \draw   (typerules)  to  (trparsing);
-  \draw   (trparser)  to  (trparsing);
-  \draw   (trparsing)  to  (trast);
-  \draw   (trast)  to  (typecheckgen);
-  \draw   (olast)  to  (typecheckgen);
-  \draw   (olast)  to  (outputparsing);
-  \draw   (outputparsing)  to  (outputtypechecking);
-  \draw   (outputtypechecking)  to  (typeerrors);
-  \draw   (typecheckgen)  to  (typechecker);
-  \draw   (inputprog)  to  (outputparsing);
-  \draw   (template)  to  (typecheckgen);
+    \draw (typerules)          to (trparsing);
+    \draw (trparser)           to (trparsing);
+    \draw (trparsing)          to (trast);
+    \draw (trast)              to (typecheckgen);
+    \draw (typingrulecompiler) to (typecheckgen);
+    \draw (typechecker)        to (outputtypechecking);
+    \draw (olast)              to (outputparsing);
+    \draw (outputparsing)      to (inputast);
+    \draw (inputast)           to (outputtypechecking);
+    \draw (outputtypechecking) to (typeerrors);
+    \draw (typecheckgen)       to (typechecker);
+    \draw (inputprog)          to (outputparsing);
 
-\end{tikzpicture}
-}
+    \draw[dashed] (templateparser)                  to (outputparsing);
+    \draw         (typecheckingalgorithm)           to (outputtypechecking);
+    \draw[dashed] (templateprojectfiles.north west) to (outputparsing);
+    \draw[dashed] (templateprojectfiles.north east) to (outputtypechecking);
+
+  \end{tikzpicture}
+  }
+  \caption{An overview of the project components and flow.}
+  \label{overviewgraph}
+\end{figure}
 
 \subsection{Typing rule definition}
 Custom DSL
