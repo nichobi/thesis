@@ -78,49 +78,59 @@
 \chapter{Introduction} % should give the background of your work. Important parts to cover:
 % Give the context of your work, have a short introduction to the area.
 While writing software, developers often make mistakes.
-Catching these mistakes as soon as possible has become 
-Type checkers are one of the most common static checking methods, but creating a new type checker is often an arduous process, requiring large amounts of complex code.
+Catching these mistakes as early as possible can prevent these bugs from ever reaching production code.
+Type checkers are one of the most common static checking methods, ensuring that the correct data types are used, but creating a new type checker is often an arduous process, requiring large amounts of complex code.
 Furthermore, making changes to the typing rules of a language can require extensive rewrites in many different parts of the type checker's codebase.
 % This can hinder experimentation
 
 In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules.
 
-
 % Define the problem you are solving (or trying to solve).
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge? How is the work divided between the co-authors? (This part is essential to pinpoint individual work. For theses with two authors, it is compulsory to identify which author has contributed with which part, both with respect to the work and the report.)
 \section{Research questions}
+To formulate our goals more concretely, we've set out to answer the following research questions:
+\newcommand{\rqone}{What kinds of typing rules can we translate through RAG?}
+\newcommand{\rqtwo}{How can we implement the translations and into what form?}
+\newcommand{\rqthree}{What are the potential issues of translating typing rules into JastAdd-based RAGs?}
 \begin{itemize}
-  \item What kinds of typing rules can we translate through RAG?
-  \item What approach?
-  \item What are the potential issues of translating typing rules into JastAdd-based RAGs?
+  \item \rqone
+  \item \rqtwo
+  \item \rqthree
 \end{itemize}
 
 \section{Related work} % Maybe move to discussion?
 % Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
+
 
 \chapter{Background}
 %\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
 \section{Type systems}
 \subsection{Data types}
 \subsection{Type checking}
-\subsubsection{Dynamic Type checking}
-\subsubsection{Static Type checking}
+\subsubsection{Dynamic type checking}
+\subsubsection{Static type checking}
+
 \section{Reference Attribute Grammars}
 \subsection{Reference Attribute Grammars}
 \subsection{JastAdd}
+\subsubsection{AST definitions}\label{astdef}
+
 
 \chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
 
 \section{Architecture}
-Overview
-
+In this section we'll be providing an overview of our architecture.
+Since it contains many different components, it may be helpful to refer to the overview graph in figure \ref{overviewgraph} while reading.
+It represents the flow of the program, with components and artefacts (represented as rectangular boxes) with arrows linking them to actions (elliptical boxes) which in turn have arrows to the new components and artefacts they produce.
+The dashed arrows from represent links from the template components that exist in the current experimental state of the project, but in a finished product would instead link to component from the object language's own compilation environment.
+%It uses rectangular boxes to represent the concrete data or artefacts of the procedure, and elliptical boxes to represent the actions performed with them.
 \begin{figure}[]
   \resizebox{\textwidth}{!}{%
   \begin{tikzpicture}[
       every node/.style = {draw=black, rounded corners, align=center},
       every path/.style = {draw, -latex}
     ]
-    \node (typerules)                               {Typing rules\\definition};
+    \node (typerules)                               {Typing rules\\definition (\ref{typingruledefinition})};
     \node (trparsing) [right=of typerules, ellipse] {Scan,\\parse,\\build};
     \node (trparser)  [above=of trparsing]          {Typing rule parser};
     \node (trast)     [right=of trparsing]          {Typing rules AST};
@@ -137,7 +147,7 @@ Overview
     \node (typingrulecompiler) [right=of trast]          {Typing rule\\compiler (\ref{typingrulecompiler})};
     \node (typechecker)        [below=of typecheckgen]   {Type checker};
 
-    \node (olast)     [below=of typerules] {AST definition};
+    \node (olast)     [below=of typerules] {AST definition\\(\ref{astdef})};
 
     \node (outputtypechecking) [below=of typechecker, ellipse] {Perform\\typechecking};
     \node (inputast)           [left=of outputtypechecking]    {Input program\\AST};
@@ -154,9 +164,9 @@ Overview
     %    \item Type checking algorithm (\ref{typecheckingalgorithm})
     %  \end{itemize}
     %};
-    \node (templateparser)        [below=of outputparsing]                               {Tree-based\\parser};
-    \node (templateprojectfiles)  at (inputast |- templateparser)                        {Project files};
-    \node (typecheckingalgorithm) at (outputtypechecking |- templateparser)              {Type check\\algorithm};
+    \node (templateparser)        [below=of outputparsing]                               {Tree-based\\parser\\(\ref{treebasedparser})};
+    \node (templateprojectfiles)  at (inputast |- templateparser)                        {Project files\\(\ref{projectfiles})};
+    \node (typecheckingalgorithm) at (outputtypechecking |- templateparser)              {Type checking\\aspect (\ref{typecheckingaspect})};
     \node (template)              [dashed, fit=(templateparser) (typecheckingalgorithm)] {};
     \node                         [above, draw=none] at (template.north)                 {Template};
 
@@ -189,38 +199,106 @@ Overview
   \label{overviewgraph}
 \end{figure}
 
-\subsection{Typing rule definition}
+\subsection{Typing rule definition}\label{typingruledefinition}
+To express typing rules, we created a simple ASCII representation of the natural deduction notation used by Pierce\cite{Pierce}.
 Custom DSL
+Include typing rules AST definition (or BNF?)
 ASCII representation of natural deduction %BNF (is it BNF?)
 \subsubsection{Language}
-Figure of example natural deduction rules (from Pierce?) and ASCII representation
+- Figure of example natural deduction rules (from Pierce?) and ASCII representation
+No infix notation
+No environments
+
+Our language can express a subset of the notation used by Pierce, with some limitations.
+Expressions aren't written in the language's native syntax, instead using a simplified syntax resembling the AST classes.
+Values and functions take their names directly from the AST-nodes, and any parameters are included within parenthesis.
+This avoids much of the difficulty in parsing different languages, which can have wildly different syntax rules.
+
+Numerical values have not been implemented, but natural numbers can be expressed using Peano numbers\cite{peano}, utilising a zero value and successor function which represents the number incremented by one.
+If a language has the syntax \verb|0 + 1| it may instead be represented as \verb|Add(Zero, Succ(Zero))|.
+
+
 \subsubsection{Parser}
 \subsubsection{Abstract syntax tree}
 
 \subsection{Type checker template}
-For ease of use the compiler will output, in addition to the type checker, a complete runnable Gradle project.
-It can parse simplified tree-representations of programs, and utilise these to perform the type checking.
-\subsubsection{Parser}
+In addition to the compiled files, there are a number of files that are added to the output file that are identical for all generated typecheckers, which we referr to as the template.
+Some of these are essential to the functions of the type checker, and others are included for convenience of testing.
+We expect that in a real world use case, our software would integrate into an object language's compiler pipeline, and utilise its own parser and project files to provide the abstract syntax tree for our type checking to tie into.
+\subsubsection{Parser}\label{treebasedparser}
 For testing purposes, our outputted type checker comes with a simple tree-based parser.
 Reflection-based parsing
-\subsubsection{Project files}
-\subsubsection{Type checking aspect}
+
+\subsubsection{Project files}\label{projectfiles}
+For ease of use the compiler will output a complete runnable Gradle project.
+It can parse simplified tree-representations of programs, and utilise these to perform the type checking.
+
+\subsubsection{Type checking aspect}\label{typecheckingaspect}
+
+\subsubsection{Executable}
+
+\subsection{Typing rule compiler}\label{typingrulecompiler}
 
 \subsection{Output type checker}
 \subsubsection{Tree-representation}
-\subsubsection{Type checking algorithm}
+\subsubsection{Type checking algorithm}\label{typecheckingalgorithm}
 Generate code for each node and typing rule
 Simple algorithm
 Recursive
 \subsubsection{Error handling}
 
 
-\section{Method (remove this?)} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
+%\section{Method (remove this?)} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
 
 
 
 \cite{Hedin2011}
 \section{Implementation} % if your work involved building an artefact/implementation, give the details here. Note, that this should not, as a rule, be a chronological description of your efforts, but a view of the result. There is a place for insights and lamentation later on in the report, in the Discussion section.
+%TODO
+\subsection{Type checker generation}
+\begin{figure}[h]
+\begin{lstlisting}[]
+RuleSet ::= Rule*;
+
+abstract Term;
+Function : Term ::= <ID> Term*;
+Value    : Term ::= <ID>;
+
+Rule ::= <Name> Conclusion:Formula Premises:Formula*;
+
+abstract Formula;
+HasType : Formula ::= Expr:Term Ty:TyTerm;
+
+abstract TyTerm;
+TyVal   : TyTerm ::= <ID>;
+TyVar : TyTerm ::= <ID>;
+\end{lstlisting}
+  \caption{Typing rules abstract syntax tree specification}
+  \label{trastspec}
+\end{figure}
+
+The type checker generation is based on a single-responsibility principle, where each node of the abstract syntax tree is responsible for generating the code it corresponds to.
+Once typing rules have been parsed, we end up with an abstract syntax tree, in the form of figure \ref{trastspec}, where the \verb|RuleSet| is the root node.
+The \verb|RuleSet| node consists of a list of \verb|Rule| nodes, and begins by sorting each rule by which object language node it describes.
+
+The \verb|RuleSet| node then begins by generating the outline of a JastAdd aspect \verb|TypingRules|, and the definition for the method \verb|.type()| for each object language node.
+It then calls on the \verb|Rule| node to fill in the implementation of the method.
+
+A \verb|Rule| consists of a name, a conclusion, and a possibly empty list of premises that need to be true for the conclusion to be returned.
+In the simplest case of an empty list of premises, the entire content of the rule is generated by the conclusion.
+For rules containing premises, the code becomes more involved.
+Firstly, any variables or type variables used in the rule need to be declared, followed by a check to ensure each use of a type variable represents a node with the same type.
+Then it generates an if-statement corresponding to our premises, by letting each \verb|Premise| generate a boolean expression, all of which get joined by the AND operator.
+
+Both \verb|Premise|s and \verb|Conclusion|s are represented by the same abstract class \verb|Formula|, which currently contains a single implementation \verb|HasType|, consisting of an expression and a type.
+Depending on whether it is used as a premise or conclusion, it can either represent that the expression must have the specified type or that the expression should be given the specified type.
+
+\subsection{Type checker design}
+The provided typing rules compile into \verb|type()| methods, which return a value from the Type interface.
+For the most simple typing rules, this method's implementation will consist of a single return statement.
+
+Types are declared in an AST specification, currently provided by the template, allowing simple type hierarchies.
+
 
 \chapter{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
 %\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
