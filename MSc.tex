@@ -485,12 +485,23 @@ throw new RuntimeException("Typechecking failed");
 %\end{figure}
 Extend bool with if-statement to show type variables
 \section{Research questions}
-\subsection{Research q 1}
-\subsection{Research q 2}
-\subsection{Research q 3}
-List of challenges % TODO
-  Splitting code between multiple JastAdd components (and java) can get messy
-  Using JastAdd simultaneously as a library and a build component
+\subsection{\rqone}
+
+\subsection{\rqtwo}
+\subsection{\rqthree}
+%Splitting code between multiple JastAdd components (and java) can get messy
+Writing idiomatic JastAdd components often requires splitting your code into many different places.
+We attempted to keep each node in the tree responsible for generating the code it corresponds to, which avoids parent nodes having to check their children's structure with \verb|isInstanceOf|, but also means even generating a simple rule can require a dozen calls between different nodes.
+There's a tradeoff to be made between the single responsibility of each component making it easy to verify its correctness, but the complicated interdependence making it hard to grasp the full picture.
+
+Using JastAdd simultaneously as a library and a build component
+
+%Having to use a hacky method to access private JastAdd methods to parse a second AST at runtime. (Beyond jastadd's scope?)
+Some of the features we intended to support, such as verifying that typing rules correspond to valid nodes within the object language AST, were complicated by having to parse the object language AST at runtime, using JastAdd as a library rather than a build tool.
+JastAdd does not expose any methods for parsing an AST tree at runtime, and we had to access undocumented, private methods through Java's reflection API to get the relevant information.
+Unfortunately, the resulting data was hard to work with and we could not allocate enough time to implement the planned features.
+It may be that this use case is beyond the intended scope of JastAdd, or it is perhaps only poorly documented.
+In either case, while our experimentation has shown it to be technically possible, the complexity is worth bearing in mind for future work.
 
 
 \chapter{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
