@@ -13,7 +13,23 @@
 \usepackage{transparent}
 \usepackage{tikz}
 \usepackage{enumitem}
+\usepackage{listings}
 \usetikzlibrary{fit,positioning,shapes.geometric}
+
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
@@ -303,9 +319,171 @@ Types are declared in an AST specification, currently provided by the template, 
 \chapter{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
 %\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
 \section{Results} % contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
-\subsection{Input/output examples, with descriptions} %TODO
-Bool language
-Type variables
+%\subsection{Input/output examples, with descriptions}
+\subsection{Bools}
+
+\begin{figure}[h]
+\begin{lstlisting}[]
+Expression ::= Term;
+
+abstract Term;
+True  : Term;
+False : Term;
+Or    : Term ::= Left:Term Right:Term;
+Zero  : Term;
+\end{lstlisting}
+  \caption{AST specification for the Bools language}
+  \label{boolsast}
+\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}[]
+[T-True]
+-----------
+True : Bool
+
+[T-False]
+------------
+False : Bool
+
+[T-Or]
+left : Bool,
+right : Bool
+----------------------
+Or(left, right) : Bool
+
+[T-Zero]
+----------
+Zero : Int
+\end{lstlisting}
+  \caption{Typing rules for the Bools language}
+  \label{boolstr}
+\end{figure}
+
+\begin{figure}[h]
+\begin{lstlisting}[]
+aspect TypingRules {
+
+syn Type Zero.type() {
+return new Int();}
+syn Type Or.type() {
+ASTNode left = getChild(0);
+ASTNode right = getChild(1);
+
+if(left.type().matches(new Bool()) && right.type().matches(new Bool())) {
+return new Bool();
+}
+throw new RuntimeException("Typechecking failed");
+}
+syn Type True.type() {
+return new Bool();}
+syn Type False.type() {
+return new Bool();}
+}
+\end{lstlisting}
+  \caption{Generated typing rules for the Bools language}
+  \label{boolstrgen}
+\end{figure}
+A simple example of a language is provided in figure \ref{boolsast}, consisting of three values, \verb|True|, \verb|False| and \verb|Zero|; and the boolean operator \verb|Or| with two parameters, Left and Right.
+In the AST specification, there are no limitations on what terms can be provided as parameters to the \verb|Or| operator, allowing illogical constructs such as \verb|Or(True, Zero)|.
+
+To prevent cases like these, we define typing rules via the specification in figure \ref{boolstr}.
+The typing rules for \verb|True|, \verb|False| and \verb|Zero| contain no premises and define the type as \verb|Bool| and \verb|Int| as appropriate.
+The typing rule for the \verb|Or| operator, which takes two parameters \verb|left| and \verb|right|, contains two premises, specifying that the \verb|Or| operator has the type \verb|Bool| only if both the \verb|left| and \verb|right| terms also have the type \verb|Bool|.
+
+The typing rules from figure \ref{boolstr} generate the type definitions in \ref{boolstrgen}.
+The simple rule definitions for the values compile into equally simple implementations, consisting of a single return statement of a newly constructed \verb|Type| object.
+For the \verb|Or| node, the code becomes slightly more complex.
+First two variables are defined, corresponding to the parameters in the typing rule, and assigned to the children with the index corresponding to the position among the parameters.
+This is followed by an if-statement, recusively evaluating the children's types and comparing the result the type demanded in the premise.
+If the condition is true, a \verb|Bool| type is returned.
+If not, a runtime exception is thrown to convey a type error.
+
+\subsection{If-else extension}
+
+\begin{figure}[h]
+\begin{lstlisting}[]
+IfElse : Term ::= Cond:Term Then:Term Else:Term;
+\end{lstlisting}
+  \caption{Extension for the Bools AST}
+  \label{ifelseast}
+\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}[]
+[T-IfElse]
+x: Bool,
+y: a,
+z: a
+------------------
+IfElse(x, y, z): a
+\end{lstlisting}
+  \caption{Extension for the Bools typing rules with an if-else term}
+  \label{ifelsetr}
+\end{figure}
+\begin{figure}[h]
+\begin{lstlisting}[]
+syn Type IfElse.type() {
+ASTNode x = getChild(0);
+ASTNode y = getChild(1);
+ASTNode z = getChild(2);
+
+Type tyvar_a = null;
+if(tyvar_a == null) tyvar_a = y.type();
+else if (!tyvar_a.matches(y.type()))
+throw new RuntimeException("Typechecking failed: Type variable mismatch");
+if(tyvar_a == null) tyvar_a = z.type();
+else if (!tyvar_a.matches(z.type()))
+throw new RuntimeException("Typechecking failed: Type variable mismatch");
+if(x.type().matches(new Bool()) && y.type().matches(tyvar_a) && z.type().matches(tyvar_a)) {
+return tyvar_a;
+}
+throw new RuntimeException("Typechecking failed");
+}
+\end{lstlisting}
+  \caption{Generated typing rules for the if-else term}
+  \label{boolstrgen}
+\end{figure}
+
+%\begin{figure}
+%\centering
+%  \begin{minipage}[b]{.4\textwidth}
+%  \centering
+%\begin{lstlisting}[]
+%[T-IfElse]
+%x: Bool,
+%y: a,
+%z: a
+%---------
+%IfElse(x, y, z): a
+%\end{lstlisting}
+%  \captionof{figure}{A figure}
+%  \label{fig:test1}
+%\end{minipage}%
+%\begin{minipage}[b]{.6\textwidth}
+%  \centering
+%\begin{lstlisting}[]
+%syn Type IfElse.type() {
+%ASTNode x = getChild(0);
+%ASTNode y = getChild(1);
+%ASTNode z = getChild(2);
+%
+%Type tyvar_a = null;
+%if(tyvar_a == null) tyvar_a = y.type();
+%else if (!tyvar_a.matches(y.type()))
+%throw new RuntimeException("Typechecking failed: Type variable mismatch");
+%if(tyvar_a == null) tyvar_a = z.type();
+%else if (!tyvar_a.matches(z.type()))
+%throw new RuntimeException("Typechecking failed: Type variable mismatch");
+%if(x.type().matches(new Bool()) && y.type().matches(tyvar_a) && z.type().matches(tyvar_a)) {
+%return tyvar_a;
+%}
+%throw new RuntimeException("Typechecking failed");
+%}
+%\end{lstlisting}
+%  \captionof{figure}{Another figure}
+%  \label{fig:test2}
+%\end{minipage}
+%\end{figure}
+Extend bool with if-statement to show type variables
 \section{Research questions}
 \subsection{Research q 1}
 \subsection{Research q 2}
