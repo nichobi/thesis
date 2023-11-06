@@ -17,19 +17,22 @@
 \usetikzlibrary{fit,positioning,shapes.geometric}
 
 \lstdefinestyle{mystyle}{
-    basicstyle=\ttfamily,
-    breakatwhitespace=false,
-    breaklines=true,
-    captionpos=b,
-    keepspaces=true,
-    numbers=left,
-    numbersep=5pt,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    tabsize=2
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2
 }
 \lstset{style=mystyle}
+\lstdefinelanguage{jrag}[]{java}{
+  morekeywords={aspect, syn, eq, inh}
+}
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
@@ -364,27 +367,34 @@ Zero : Int
 \end{figure}
 
 \begin{figure}[h]
-\begin{lstlisting}[]
+\begin{lstlisting}[language=jrag] 
 aspect TypingRules {
 
-syn Type Zero.type() {
-return new Int();}
-syn Type Or.type() {
-ASTNode left = getChild(0);
-ASTNode right = getChild(1);
+  syn Type Zero.type() {
+    return new Int();
+  }
 
-if(left.type().matches(new Bool()) && right.type().matches(new Bool())) {
-return new Bool();
-}
-throw new RuntimeException("Typechecking failed");
-}
-syn Type True.type() {
-return new Bool();}
-syn Type False.type() {
-return new Bool();}
+  syn Type Or.type() {
+    ASTNode left = getChild(0);
+    ASTNode right = getChild(1);
+
+    if(left.type().matches(new Bool()) &&
+       right.type().matches(new Bool())) {
+      return new Bool();
+    }
+    throw new RuntimeException("Typechecking failed");
+  }
+
+  syn Type True.type() {
+    return new Bool();
+  }
+
+  syn Type False.type() {
+    return new Bool();
+  }
 }
 \end{lstlisting}
-  \caption{Generated typing rules for the Bools language}
+  \caption{Generated typing rules for the Bools language (reformatted for readability)}
   \label{boolstrgen}
 \end{figure}
 A simple example of a language is provided in figure \ref{boolsast}, consisting of three values, \verb|True|, \verb|False| and \verb|Zero|; and the boolean operator \verb|Or| with two parameters, Left and Right.
@@ -398,7 +408,7 @@ The typing rules from figure \ref{boolstr} generate the type definitions in \ref
 The simple rule definitions for the values compile into equally simple implementations, consisting of a single return statement of a newly constructed \verb|Type| object.
 For the \verb|Or| node, the code becomes slightly more complex.
 First two variables are defined, corresponding to the parameters in the typing rule, and assigned to the children with the index corresponding to the position among the parameters.
-This is followed by an if-statement, recusively evaluating the children's types and comparing the result the type demanded in the premise.
+This is followed by an if-statement, recursively evaluating the children's types and comparing the result the type demanded in the premise.
 If the condition is true, a \verb|Bool| type is returned.
 If not, a runtime exception is thrown to convey a type error.
 
@@ -408,7 +418,7 @@ If not, a runtime exception is thrown to convey a type error.
 \begin{lstlisting}[]
 IfElse : Term ::= Cond:Term Then:Term Else:Term;
 \end{lstlisting}
-  \caption{Extension for the Bools AST}
+  \caption{Extension for the Bools AST in figure \ref{boolsast}}
   \label{ifelseast}
 \end{figure}
 \begin{figure}[h]
@@ -420,31 +430,35 @@ z: a
 ------------------
 IfElse(x, y, z): a
 \end{lstlisting}
-  \caption{Extension for the Bools typing rules with an if-else term}
+  \caption{Extension for the Bools typing rules in figure \ref{boolstr} with an if-else term}
   \label{ifelsetr}
 \end{figure}
 \begin{figure}[h]
-\begin{lstlisting}[]
+\begin{lstlisting}[language=jrag]
 syn Type IfElse.type() {
-ASTNode x = getChild(0);
-ASTNode y = getChild(1);
-ASTNode z = getChild(2);
+  ASTNode x = getChild(0);
+  ASTNode y = getChild(1);
+  ASTNode z = getChild(2);
 
-Type tyvar_a = null;
-if(tyvar_a == null) tyvar_a = y.type();
-else if (!tyvar_a.matches(y.type()))
-throw new RuntimeException("Typechecking failed: Type variable mismatch");
-if(tyvar_a == null) tyvar_a = z.type();
-else if (!tyvar_a.matches(z.type()))
-throw new RuntimeException("Typechecking failed: Type variable mismatch");
-if(x.type().matches(new Bool()) && y.type().matches(tyvar_a) && z.type().matches(tyvar_a)) {
-return tyvar_a;
-}
-throw new RuntimeException("Typechecking failed");
+  Type tyvar_a = null;
+  if(tyvar_a == null)
+    tyvar_a = y.type();
+  else if (!tyvar_a.matches(y.type()))
+    throw new RuntimeException("Typechecking failed: Type variable mismatch");
+  if(tyvar_a == null)
+    tyvar_a = z.type();
+  else if (!tyvar_a.matches(z.type()))
+    throw new RuntimeException("Typechecking failed: Type variable mismatch");
+  if(x.type().matches(new Bool()) &&
+     y.type().matches(tyvar_a) &&
+     z.type().matches(tyvar_a)) {
+    return tyvar_a;
+  }
+  throw new RuntimeException("Typechecking failed");
 }
 \end{lstlisting}
-  \caption{Generated typing rules for the if-else term}
-  \label{boolstrgen}
+  \caption{Generated typing rules for the if-else term, extending figure \ref{boolstrgen} (reformatted for readability)}
+  \label{ifelsetrgen}
 \end{figure}
 
 %\begin{figure}
