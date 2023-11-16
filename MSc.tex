@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usepackage{enumitem}
 \usepackage{listings}
+\usepackage{subcaption}
 \usetikzlibrary{fit,positioning,shapes.geometric}
 
 \lstdefinestyle{mystyle}{
@@ -33,6 +34,8 @@
 \lstdefinelanguage{jrag}[]{java}{
   morekeywords={aspect, syn, eq, inh}
 }
+
+\setcounter{secnumdepth}{4} % Number subsubsections
 
 % used to display the used files at the end. Select nofilelist as a package option to disable this
 \listfiles % initialize
@@ -82,7 +85,8 @@
 %Leave a \textit{2cm} vertical space after the abstract and provide a few keywords relevant for your report. Use five to six words, of which at most two should be from the title.
 }
 
-\keywords{MSc, BSc, template, report, style, structure}
+%\keywords{MSc, BSc, template, report, style, structure}
+\keywords{type checking, type theory, code generation}
 
 %% Only used to display font sizes
 \makeatletter
@@ -128,8 +132,11 @@ To formulate our goals more concretely, we've set out to answer the following re
 \subsection{Type checking}
 \subsubsection{Dynamic type checking}
 \subsubsection{Static type checking}
+\subsection{Typing rules}
+use left hand side of these again \ref{trexampleif}
 
 \section{Reference Attribute Grammars}
+\cite{RAG}
 \subsection{Reference Attribute Grammars}
 \subsection{JastAdd}
 \subsubsection{AST definitions}\label{astdef}
@@ -151,8 +158,8 @@ The dashed arrows from represent links from the template components that exist i
     ]
     \node (typerules)                               {Typing rules\\definition (\ref{typingruledefinition})};
     \node (trparsing) [right=of typerules, ellipse] {Scan,\\parse,\\build};
-    \node (trparser)  [above=of trparsing]          {Typing rule parser};
-    \node (trast)     [right=of trparsing]          {Typing rules AST};
+    \node (trparser)  [above=of trparsing]          {Typing rule parser\\(\ref{typingrulesparser})};
+    \node (trast)     [right=of trparsing]          {Typing rules AST\\(\ref{typingrulesast})};
 
     %\node (typecheckgen) [below=of trast, ellipse, text width=5cm] {
     %  \textbf{Type checker generation}\\
@@ -171,7 +178,7 @@ The dashed arrows from represent links from the template components that exist i
     \node (outputtypechecking) [below=of typechecker, ellipse] {Perform\\typechecking};
     \node (inputast)           [left=of outputtypechecking]    {Input program\\AST};
     \node (outputparsing)      [left=of inputast, ellipse]     {Scan,\\parse,\\build};
-    \node (typeerrors)         [right=of outputtypechecking]   {Type errors};
+    \node (typeerrors)         [right=of outputtypechecking]   {Type errors\\(\ref{errorhandling})};
     \node (inputprog)          [left=of outputparsing]         {Input program};
 
     %\node (template) [below=of inputast, text width=6cm] {
@@ -306,7 +313,7 @@ Numerical values have not been implemented, but natural numbers can be expressed
 If a language has the syntax \verb|0 + 1| it may instead be represented as \verb|Add(Zero, Succ(Zero))|.
 
 
-\subsubsection{Parser}
+\subsubsection{Parser}\label{typingrulesparser}
 \subsubsection{Abstract syntax tree}
 
 \subsection{Type checker template}
@@ -353,16 +360,14 @@ It can parse simplified tree-representations of programs, and utilise these to p
 Generate code for each node and typing rule
 Simple algorithm
 Recursive
-\subsubsection{Error handling}
 
 
 %\section{Method (remove this?)} % describe how you go about solving the problem you defined. Also how do you show/prove that your solution actually works, and how well does it work.
 
 
 
-\cite{Hedin2011}
 \section{Implementation} % if your work involved building an artefact/implementation, give the details here. Note, that this should not, as a rule, be a chronological description of your efforts, but a view of the result. There is a place for insights and lamentation later on in the report, in the Discussion section.
-%TODO
+
 \subsection{Type checker generation}
 \begin{figure}[h]
 \begin{lstlisting}[]
@@ -378,7 +383,7 @@ abstract Formula;
 HasType : Formula ::= Expr:Term Ty:TyTerm;
 
 abstract TyTerm;
-TyVal   : TyTerm ::= <ID>;
+TyVal : TyTerm ::= <ID>;
 TyVar : TyTerm ::= <ID>;
 \end{lstlisting}
   \caption{Typing rules abstract syntax tree specification}
@@ -487,7 +492,7 @@ Zero : Int
 \end{figure}
 
 \begin{figure}[h]
-\begin{lstlisting}[language=jrag] 
+\begin{lstlisting}[language=jrag]
 aspect TypingRules {
 
   syn Type Zero.type() {
@@ -662,7 +667,8 @@ Better support for numbers, strings, etc.
 \makebibliography{MyMSc} % is a must in a scientific report. {\LaTeX} and \texttt{bibtex} offer great support for  handling references and automatically generating bibliographies.
 
 \begin{appendices} %should contain lengthy details of the experimental setup, mathematical proofs, code download information, and shorter code snippets. Avoid longer code listings. Source code should rather be made available for download on a website or on-line repository of your choosing.
-Git repository link
+\chapter{Source code}
+\url{https://github.com/nichobi/thesis-project}
 
 % display used packages information unless noflielist is used in the cslthse-msc package option
 \printfilelist
@@ -671,9 +677,9 @@ Git repository link
 \checkoddpage
 \ifoddpage
 \else
-   \newpage
-   \thispagestyle{empty}
-   \mbox{ }
+  \newpage
+  \thispagestyle{empty}
+  \mbox{ }
 \fi
 \includepdf[pages={1}]{popsci/popsci.pdf}
 \end{appendices}
