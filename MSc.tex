@@ -314,8 +314,28 @@ In addition to the compiled files, there are a number of files that are added to
 Some of these are essential to the functions of the type checker, and others are included for convenience of testing.
 We expect that in a real world use case, our software would integrate into an object language's compiler pipeline, and utilise its own parser and project files to provide the abstract syntax tree for our type checking to tie into.
 \subsubsection{Parser}\label{treebasedparser}
-For testing purposes, our outputted type checker comes with a simple tree-based parser.
-Reflection-based parsing
+For testing purposes, our template comes with a generic tree-based parser.
+Programs are written as a tree of AST node names followed by potential parenthesis within which a comma separated list of child nodes are written.
+It recursively parses the tree, using Java's reflection API to find a class with a matching name, and a constructor with the matching number of parameters.
+Figure \ref{boolinputexample} shows an example input file for the Bools language, which will be discussed further in section \ref{boolsast}.
+
+\begin{figure}[h]
+\begin{lstlisting}[]
+Expression(
+  Or(
+    True,
+    Or(
+      True,
+      False
+    )
+  )
+)
+\end{lstlisting}
+  \caption{Example input file for the Bools language}
+  \label{boolinputexample}
+\end{figure}
+
+This approach does have the issue of occasionally parsing invalid programs, due to the existence of a hidden default constructor. This leads the parser to always accept nodes with no children, such as \lstinline{Expression(Or())}, even if the AST definition requires them.
 
 \subsubsection{Project files}\label{projectfiles}
 For ease of use the compiler will output a complete runnable Gradle project.
