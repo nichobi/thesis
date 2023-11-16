@@ -224,14 +224,83 @@ Custom DSL
 Include typing rules AST definition (or BNF?)
 ASCII representation of natural deduction %BNF (is it BNF?)
 \subsubsection{Language}
-- Figure of example natural deduction rules (from Pierce?) and ASCII representation
-No infix notation
-No environments
 
-Our language can express a subset of the notation used by Pierce, with some limitations.
-Expressions aren't written in the language's native syntax, instead using a simplified syntax resembling the AST classes.
-Values and functions take their names directly from the AST-nodes, and any parameters are included within parenthesis.
-This avoids much of the difficulty in parsing different languages, which can have wildly different syntax rules.
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\textwidth}
+  \centering
+  \begin{equation}
+    \tag{T-True}
+    \text{true} : \text{Bool}
+  \end{equation}
+  %\caption*{Pierce syntax}
+  %\label{fig:sub1}
+\end{minipage}%
+\hspace{.1\textwidth}\begin{minipage}{.45\textwidth}
+  \centering
+\begin{lstlisting}[]
+[T-True]
+True : Bool
+\end{lstlisting}
+  %\caption*{ASCII representation}
+  %\label{fig:sub2}
+\end{minipage}
+\caption{A typing rule for the value true in natural semantic syntax on the left and its equivalent ASCII representation on the right}
+\label{trexampletrue}
+\end{figure}
+\begin{figure}[h]
+\centering
+\begin{minipage}{.45\textwidth}
+  \centering
+  \begin{equation}
+    \tag{T-If}
+    \frac{
+      t_1 : \text{Bool}\quad
+      t_2 : \text{T}\quad
+      t_3 : \text{T}
+    }{
+      \text{if } t_1 \text{ then } t_2 \text{ else } t_3 : \text{T}
+    }
+  \end{equation}
+  %\caption*{Pierce syntax}
+  %\label{fig:sub1}
+\end{minipage}%
+\hspace{.1\textwidth}\begin{minipage}{.45\textwidth}
+  \centering
+\begin{lstlisting}[]
+[T-If]
+t1 : Bool,
+t2 : t,
+t3 : t
+-----------------
+If(t1, t2, t3): t
+\end{lstlisting}
+  %\caption*{ASCII representation}
+  %\label{fig:sub2}
+\end{minipage}
+\caption{A typing rule describing an if-expression in natural semantic syntax and its equivalent ASCII representation}
+\label{trexampleif}
+\end{figure}
+
+%- Figure of example natural deduction rules (from Pierce?) and ASCII representation
+%No infix notation
+%No environments
+
+To express typing rules, we have defined an ASCII representation of the natural semantics syntax used by Pierce\cite{pierce}.
+Our language can express a subset of the notation used by Pierce, with some differences and limitations.
+
+Figures \ref{trexampletrue} and \ref{trexampleif} show two rules from Pierce in both their original syntax and our ASCII representation side by side.
+The former figure describes a simple rule named T-True, which assigns the \verb|true| expression the type \verb|Bool|.
+
+The largest difference can be seen in the expression to be typed, where Pierce uses the object language's native syntactic form, whereas our representation is based on the corresponding AST nodes.
+In the first example, the difference is minor (\verb|true| and \verb|True| respectively) but the difference is more apparent in figure \ref{trexampleif}, where instead of the full syntactic form, the expression is written as an AST node with its children represented as parameters.
+%Note the difference between the \verb|true| written in Pierce, representing the native syntactic form of the expression, and the \verb|True| in the ASCII representation, representing the name of the corresponding AST node.
+%This difference is more apparent in figure \ref{trexampleif}, where instead of the full syntactic form, the expression is written as an AST node with its children represented as parameters.
+This change is necessary to allow us to type arbitrary languages without needing to understand their syntax and grammar, though it does make translating rules from one syntax to the other less straightforward.
+
+Another difference is the use of the metavariable \verb|T|, which has been switched to the lowercase \verb|t| in order to distinguish concrete types and type variables.
+This change also aligns the syntax for type terms with the regular terms, where concrete nodes (such as \verb|If|) are written uppercase and variables (\verb|t1|, \verb|t2|, \verb|t3|) in lowercase.
+Commas are also used to separate the premises, and the horizontal line separating premises from the conclusion is represented as a series of dashes.
 
 Numerical values have not been implemented, but natural numbers can be expressed using Peano numbers\cite{peano}, utilising a zero value and successor function which represents the number incremented by one.
 If a language has the syntax \verb|0 + 1| it may instead be represented as \verb|Add(Zero, Succ(Zero))|.
