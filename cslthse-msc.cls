@@ -54,7 +54,8 @@
 %		\usepackage{tgcursor}
 %%% change
 		\usepackage{lmodern}%\usepackage{tgcursor}
-		\usepackage{qtxmath}	
+		\usepackage{newtxtext}
+\usepackage{newtxmath}	
 %        \usepackage{tgschola}%\usepackage{tgadventor}%\usepackage{tgheros}
 %        \global\let\bfseries\sbweight
         \usepackage{CormorantGaramond}%\usepackage{tgtermes}
