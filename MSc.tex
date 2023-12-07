@@ -88,7 +88,7 @@
 }
 
 %\keywords{MSc, BSc, template, report, style, structure}
-\keywords{type checking, type theory, code generation}
+\keywords{type checking, type theory, code generation, reference attribute grammars}
 
 %% Only used to display font sizes
 \makeatletter
@@ -108,7 +108,9 @@ Type checkers are one of the most common static checking methods, ensuring that 
 Furthermore, making changes to the typing rules of a language can require extensive rewrites in many different parts of the type checker's codebase.
 
 % Define the problem you are solving (or trying to solve).
-In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules, using .
+In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules, using JastAdd's implementation of reference attribute grammars.
+
+%TODO: Give an overview of the other sections
 
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge?
 \section{Research questions}
@@ -124,16 +126,35 @@ To formulate our goals more concretely, we've set out to answer the following re
 
 \section{Related work} % Maybe move to discussion?
 % Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
-Pacak et al. implemented a compiler for generating incremental type checkers using Datalog.\cite{Pacak}
+Pacak et al. implemented a compiler for generating incremental type checkers using Datalog\cite{Pacak}.
 While the goal is similar to ours, they take a different approach, by converting typing rules into the declarative logic programming language.
+
 Their work is thereby largely focused on expressing typing rules within the limits of the Datalog language, which can only compute finite relations.
 We have a significantly different compilation target, JastAdd, which allows us to use reference attribute grammars to evaluate the typing relations, which we write in a more iterative approach.
+
+Additionally, their project defines a formalism for expressing typing rules within the Datalog language, ours defines a language which aims to keep as close as possible to the traditional inference rules used for typing rules, to minimise the difficulty of translation.
 
 
 \chapter{Background}
 %\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
 This chapter aims to provide all the background information required to understand the work presented in the rest of the report.
-\section{Type systems}
+The first section explains abstract syntax trees, which are extensively utilised in almost every stage of our project, both in terms of our implementation and the input to the program.
+The next section details type systems, by first introducing data types, then explaining the components required for a type system, followed by a description of static type checkers.
+
+\section{Abstract syntax trees}
+An abstract syntax tree (AST) is a tree-based representation of the syntax of a program.
+Each node in the tree represents a syntactic construct of the language, such as expressions, statements or declarations and the branches represent the structure.
+It's abstract in that it neglects to include all the concrete details of the syntax, but rather focuses on the structure of the program.
+Structural elements of the source code, such as parenthesis, commas and brackets, are no longer necessary, as the structure of the tree conveys this information.
+A statement like \verb|if (true) then {1} else {0}| maybe instead be represented by an if-else node, with named branches pointing towards the condition and the two values.
+
+This layer of abstraction makes it easier to write analyses for the program, as we can focus on the key elements and structure.
+
+\section{Type theory}
+In this section we'll discuss the elements of type theory required to understand this thesis.
+Firstly, we'll discuss what types are and give some examples of their use.
+Next, we'll describe type system, which form a relation between types and expressions.
+
 \subsection{Data types}
 Computer software generally needs to handle and manipulate several different types of data in one program, such as numbers or text.
 Most programming languages come with a number of built-in data types, from different kinds of numbers (integers, floating point) to strings or lists and arrays.
@@ -142,27 +163,95 @@ Different parts of programs may have different constraints on the types of expre
 
 \subsection{Type checking}
 There are two main approaches to ensuring that the aforementioned constraints are upheld, dynamic and static type-checking.
-Dynamic checking is done during runtime, with each type checked only when needed.
-Static checking is done on the code before it's run, usually as part of compilation, preventing many faulty programs from being run at all.
+Dynamic checking is done performed runtime, with each type checked only when needed.
+Static checking is performed on the code before it's run, usually as part of compilation, preventing many faulty programs from being run at all.
 
-As our project generates a static type checker, we will focus on them.
+As our project generates a static type checker, we will focus our explanations on that topic.
+Static checkers analyse the structure of the source code, often in the form of an abstract syntax tree.
 Conservative
 
-\subsubsection{Dynamic type checking}
-\subsubsection{Static type checking}
 \subsection{Type systems}
-A type system consists of two parts, a type syntax, describing the valid types of a language; and typing rules, denoting how types should be assigned to expressions within the language.
+A type system consists of two parts, a type syntax, describing the available types of a language; and typing rules, denoting how types should be assigned to expressions within the language.
 \subsubsection{Type syntax}
 A type syntax is a definition of the valid types within a language.
+It can consist of fundamental types, such as integers or booleans.
+There may also be parameterised or composite types, for example lists may have a type parameter defining what values it can contain.
+
 \subsubsection{Typing rules}
-use left hand side of these again \ref{trexampleif}
+The typing relation, notated \lstinline{t : T}, is a link between the expressions of a language and the types of the type syntax.
+The left-hand side is an expression in the object lanuage, typically written in its native syntax, the right-hand side a type from the aforementioned type syntax.
+
+Typing rules are a manner of inference rules, which in their simplest form, consist of no more than a typing relation.
+The typing rule \lstinline{T-True} seen in figure \ref{typingruleexampletrue}, for example, simply assigns the type of \lstinline{Bool} to the expression \lstinline{true}.
+Additionally, the typing rules in these examples have a name, given in parentheses next to the rule, though this is merely for reference.
+
+\begin{figure}[h]
+  \begin{equation}
+    \tag{T-True}
+    \text{true} : \text{Bool}
+  \end{equation}
+  \caption{Typing rule for a true expression}
+  \label{typingruleexampletrue}
+\end{figure}
+
+Typing rules may also have premises, a number of conditions which must hold for the typing rule to apply.
+The notational convention here is to put the premises above a bar, with the conclusion underneath it.
+
+\begin{figure}[h]
+  \begin{equation}
+    \tag{T-If}
+    \frac{
+      t_1 : \text{Bool}\quad
+      t_2 : \text{T}\quad
+      t_3 : \text{T}
+    }{
+      \text{if } t_1 \text{ then } t_2 \text{ else } t_3 : \text{T}
+    }
+  \end{equation}
+  \caption{Typing rule for an if-expression}
+  \label{typingruleexampleif}
+\end{figure}
+
+Figure \ref{typingruleexampleif} shows an example rule, typing an if-expression.
+The bottom line, the conclusion, contains the keywords of the if-expression and three variables $t_i$ which represent any term within the language.
+Above the bar are three premises, placing constraints on the three variables, which must hold for the typing rule to apply.
+The first constrains $t_1$ to the type bool, the second two constrain $t_2$ and $t_3$ to a type variable T, which represents any single arbitrary type within the type syntax.
+While T may be any type, it must consistently be the same type within any single evaluation of the rule, i.e. the two terms must have the same type.
+This T also appears in the conclusion, as the resulting type of the if-expression, meaning the result of the entire expression will be that of the $t_2$ and $t_3$ terms.
 
 \section{Reference Attribute Grammars}
-\cite{RAG}
-\subsection{Reference Attribute Grammars}
-\subsection{JastAdd}
-\subsubsection{AST definitions}\label{astdef}
+This section introduces the subject of Reference Attribute Grammars (RAGs), first explaining the theory behind them, then introducing JastAdd, an implementation of RAGs within a Java meta-compiliation system\cite{jastadd}.
 
+\subsection{Reference Attribute Grammars}
+Reference Attribute Grammars (RAGs) are an extension to Attribute Grammars (AGs), a formalism used for specifying the semantics of programming languages.
+AGs provide a systematic way to define computations on the nodes of an abstract syntax tree, associating attributes with language constructs and are commonly used in the context of compiler construction, where they help define the translation of source code into executable code\cite{AGs}.
+
+RAGs extend these properties by introducing a new kind of attribute, allowing references to other nodes in the AST, and through the references accessing the attributes of other nodes.
+This provides a simplified and more flexible method for interconnectedness between nodes\cite{RAG}.
+
+\subsection{JastAdd}
+JastAdd is an implementation of RAGs for Java, offering a flexible system for writing language analysis in an object-oriented fashion.
+\cite{JastAdd}
+\subsubsection{AST specification}\label{astdef}
+One of the key components of a JastAdd projects are the \verb|.ast| files, which declare the structure of the abstract syntax tree.
+This specification is then used by JastAdd to generate Java classes representing the nodes of the AST.
+These AST classes can have a variety of forms, supporting both abstract classes and subclasses, and can contain components such as Java types, tokens and child nodes, and these components may also be optional or list components.
+For a detailed overview of the syntax, see the reference manual\cite{jastaddref}.
+
+\subsubsection{RAG Modules}
+\begin{figure}[h]
+\begin{lstlisting}[language=jrag]
+aspect TypingRules {
+  syn Type Zero.type() {
+    return new Int();
+  }
+}
+\end{lstlisting}
+  \caption{Snippet of a .jrag file, declaring a type attribute for the Zero AST node}
+  \label{boolstrgen}
+\end{figure}
+The RAG modules written in \verb|.jrag| files, declare the attributes to be included in the classes generated by the AST specification.
+The files use a syntax very similar to that of Java to declare attributes of a variety of different kinds, and the body of methods corresponds directly to Java code.
 
 \chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
 
@@ -195,7 +284,7 @@ The dashed arrows from represent links from the template components that exist i
     \node (typingrulecompiler) [right=of trast]          {Typing rule\\compiler (\ref{typingrulecompiler})};
     \node (typechecker)        [below=of typecheckgen]   {Type checker};
 
-    \node (olast)     [below=of typerules] {AST definition\\(\ref{astdef})};
+    \node (olast)     [below=of typerules] {AST specification\\(\ref{astdef})};
 
     \node (outputtypechecking) [below=of typechecker, ellipse] {Perform\\typechecking};
     \node (inputast)           [left=of outputtypechecking]    {Input program\\AST};
@@ -252,7 +341,7 @@ The dashed arrows from represent links from the template components that exist i
 \subsection{Typing rule definition}\label{typingruledefinition}
 To express typing rules, we created a simple ASCII representation of the natural deduction notation used by Pierce\cite{Pierce}.
 Custom DSL
-Include typing rules AST definition (or BNF?)
+Include typing rules AST specification (or BNF?)
 ASCII representation of natural deduction %BNF (is it BNF?)
 \subsubsection{Language}\label{sectionlanguage}
 
@@ -400,7 +489,7 @@ Expression(
 \end{figure}
 
 This approach does have the issue of occasionally parsing invalid programs, due to the reflection API finding an additional parameterless default constructor.
-This leads the parser to always accept nodes written with no children, such as \lstinline{Expression(Or())}, even if the AST definition requires them.
+This leads the parser to always accept nodes written with no children, such as \lstinline{Expression(Or())}, even if the AST specification requires them.
 These children will be null, causing issues further down the line, though as this parser is only intended for testing it is of little concern.
 
 \subsubsection{Project files}\label{projectfiles}
@@ -726,13 +815,23 @@ Parametric types, such as lists where the type of the list contains information 
 The current implementation of \lstinline[language=java]{matches()} would however consider all lists to match, without comparing the child nodes.
 Perhaps the default implementation could be extended to compare all child elements, or these more advanced types would require manually overriding the method.
 
-We've implemented premises as conditionals, where we check if each premise holds true before returning the type, or falling through to a type error if the premises don't hold.
-It would also be possible to instead check each condition one by one, and throw a type error as soon as one doesn't match.
-This would perhaps make it easier to implement informative type errors, as you could report precisely which premise is failing.
-It would however make it harder to implement having multiple valid rules describing the type of an expression, as the first failure would seize the evaluation of the node.
+We've implemented premises as conditions of a single if-statement, where we check that each premise holds true before returning the type, or falling through to a type error if the premises don't hold.
+It might instead be worthwhile to check each condition individually, to be able to specify in the error message precisely which premises have failed and why.
+%This would perhaps make it easier to implement informative type errors, as you could report precisely which premise is failing.
+If paired with the current error handling of throwing an exception to convey type errors, it would make it harder to implement having multiple valid rules providing the type of an expression, as the first failure would seize the evaluation of the type.
+An alternative error handling would suit it better, one able to collect multiple errors without seizing evaluation, perhaps merely adding all the errors to a list and checking whether it is empty before returning a type.
+
+The variables in the typing rules are compiled into regular Java variables containing the AST node.
+Notably, the declarations of these variables type them merely as \verb|ASTNode|.
+As we currently only utilise the \lstinline{type()} attribute, which is declared for all nodes, this lost information has little impact.
+However, in the future it may become relevant to type these more specifically, to support more complex rules that require deeper analysis within the tree.
+
+Type variables similarly are implemented as Java variables, though they are initiated as null, to represent the type variable's unassigned state.
+This is followed by a check for each point of use in the typing rule, to see whether the type variable is still unassigned and if so assign it.
+This approach leaves much room for improvement and optimisation, by finding the first use of each type variable during the rule compilation, and generating a single declaration statement initialising it to the type of the corresponding expression.
 
 A cleaner solution to this might be view rules as a kind of pattern matching, where each rule is evaluated one by one until a matching one is found.
-Instead of reporting the reason any individual rule failed, the error might instead display each possible rule, 
+Instead of reporting the reason any individual rule failed, the error might instead display all the rules it tried to apply, perhaps with a list of non-holding premises for each one.
 
 \subsection{\rqthree}
 %Splitting code between multiple JastAdd components (and java) can get messy
@@ -755,14 +854,31 @@ These errors will then go unreported until the output project is compiled or run
 
 \chapter{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
 % Occasionally these sections are intermingled, if this allows for a better presentation of your work. However, try to distinguish between measurements or hard data (results) and extrapolations, interpretations, or speculations (discussion).
-\section{Supported features}
-\section{Development learnings}
+%\section{Supported features}
+%\section{Development learnings}
+\chapter{Conclusions} % should summarize your findings and possible improvements or recommendations.
 Our experiments have shown that reference attribute grammars are a flexible method for implementing type checker generators.
 Implementing the first top-to-bottom functioning product was challenging and took quite a lot of work, but extending it with additional features such as type variables turned out to be a surprisingly painless experience.
 
-\chapter{Conclusions} % should summarize your findings and possible improvements or recommendations.
-\section{Summary of findings}
+However, our compiler still has a long way to go before it can be used for real world use cases and general purpose languages.
+Chief among the missing features is the concept of environments, without which we're unable to support even common language features such as variables or functions.
+
+%\section{Summary of findings}
 \section{Future work}
+\subsection{Environments}
+Implementing environments, or type contexts, would be the clear next step for this project.
+However, its implementation is not entirely clear-cut, with several aspects requiring consideration.
+
+The essence of environments is the mapping of variables or functions to types, and an appropriate representation of this would need to be found.
+A method often used by traditional type checkers is a symbol table, a separate data structure mapping language constructs to their types.
+In our case, we may instead be able to leverage our reference attribute grammars to store the information within the AST.
+By connecting each use of a variable or function to the AST node representing its declaration site, we could utilise the node to store the type information.
+This approach would however also have to consider the typing of external language constructs, such as built-in functions or those imported from external libraries, for which we wouldn't have access to the declaration site.
+
+%An additional concern is that of scoping, which different languages may have different rules for.
+
+A type checker working on these principles is certainly a possibility, though it remains to be seen how it could be generalised to the generation of typing rules for arbitrary languages.
+
 \subsection{Improved error handling}
 The current exception-based error handling is rather primitive and leaves much to be desired.
 Some improvements, such as provide more useful error messages, could be possible by making minor changes to how these exceptions are generated.
@@ -773,11 +889,27 @@ This could be implemented by adding another type class to be returned when an er
 Any \verb|matches()| call on this type would return true, to avoid one error cascading into many, but still allowing other unrelated errors to be discovered.
 This implementation would also need new functionality to collect the error messages, perhaps by splitting the type resolution and type errors into separate attributes for each node, where the type errors propagate to a program-wide collection.
 
-\subsection{Check for completeness of rules}
 
 \subsection{Verify rules against AST}
-\subsection{Handle multiple rules for the same node (add(int, int): int, add(double, double): double)}
+Major improvements to the user experience could be made by tying the typing rules to the object language AST before generating the type checker.
+Currently, there are no checks in place to verify the completeness of the typing rules.
+If a user accidentally leaves out the typing rule for a certain construct, they'll receive no warning until the outputted type checker attempts to check the expression's type.
+
+Similarly, no checks are made to ensure the nodes described in the typing rules actually exist within the language's AST.
+Our project will compile invalid or misspelled typing rules without complaint, leading to errors which won't be caught until the outputted type checker is attempted to be compiled.
+
+\subsection{Handle multiple rules for the same node}
+In type systems it is generally considered valid to have multiple typing rules for the same construct, with different, non-intersecting prerequisites.
+It could for example be useful to type an addition operator for a variety of different numerical types, which may not have a common ancestor.
+
+Most of the work to support this is in place, though the first rule to fail would throw a type error exception, preventing the later rules from evaluating.
+These errors would either have to be caught, and only emitted if all rules had failed, or a new error handling system not based around exceptions could be introduced.
+Additionally, an extra layer of scoping would have to be introduced, to prevent variable naming collisions between the different rules.
+This could be solved simply by wrapping each rule within brackets, creating a separate scope for the evaluation of each rule.
+
+%add(int, int): int, add(double, double): double)
 \subsection{Better support for numbers, strings, etc.}
+
 \subsection{Improved type checking algorithm}
 
 
