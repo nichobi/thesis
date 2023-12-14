@@ -771,8 +771,12 @@ This tends to result in errors that are more useful for debugging the typing rul
 
 
 \chapter{Evaluation} % is the part where you present the finds. Depending on the area this part contains a subset or all of the following:
+\CR{The section has two parts, so the intro paragraph here can directly discuss their purpose.}
 %\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
 \section{Results} % contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
+\CR{You can't discuss results without describing your experiments, but to describe the experiments, you should first motivate them.
+  Since you are doing case studies, you can use Pierce to motivate your choice of languages (even if your language is subtly different somehow; I don't have the book in front of me).
+  Make clear to the reader that you picked your languages based on the existing literature, not on a whim.}
 %\subsection{Input/output examples, with descriptions}
 \subsection{Bools}
 
@@ -838,7 +842,8 @@ aspect TypingRules {
   }
 }
 \end{lstlisting}
-  \caption{Generated typing rules for the Bools language (reformatted for readability)}
+\caption{Generated typing rules for the Bools language (reformatted for readability)
+\CR{}}
   \label{boolstrgen}
 \end{figure}
 A simple example of a language is provided in figure \ref{boolsast}, consisting of three values, \verb|True|, \verb|False| and \verb|Zero|; and the boolean operator \verb|Or| with two parameters, Left and Right.
@@ -851,18 +856,23 @@ The typing rule for the \verb|Or| operator, which takes two parameters \verb|lef
 The typing rules from figure \ref{boolstr} generate the type definitions in \ref{boolstrgen}.
 The simple rule definitions for the values compile into equally simple implementations, consisting of a single return statement of a newly constructed \verb|Type| object.
 For the \verb|Or| node, the code becomes slightly more complex.
+\CR{The next bit would probably be easier if you just show the code.}
 First two variables are defined, corresponding to the parameters in the typing rule, and assigned to the children with the index corresponding to the position among the parameters.
 This is followed by an if-statement, recursively evaluating the children's types and comparing the result the type demanded in the premise.
 If the condition is true, a \verb|Bool| type is returned.
 If not, a runtime exception is thrown to convey a type error.
 
+\CR{You may want to add a short statement that this captures the intended behaviour of the type checker.}
+
 \subsection{If-else extension}
+
+\CR{Separate case study or next step in the same case study?  Either way, the section title should make the connection to 4.1.1 (or lack thereof) clear.}
 
 \begin{figure}[h]
 \begin{lstlisting}[]
 IfElse : Term ::= Cond:Term Then:Term Else:Term;
 \end{lstlisting}
-  \caption{Extension for the Bools AST in figure \ref{boolsast}}
+  \caption{Extension for the Bools AST in figure \ref{boolsast} \CR{Consider giving this language a different name, for clarity}}
   \label{ifelseast}
 \end{figure}
 
@@ -902,7 +912,9 @@ syn Type IfElse.type() {
   throw new RuntimeException("Typechecking failed");
 }
 \end{lstlisting}
-  \caption{Generated typing rules for the if-else term, extending figure \ref{boolstrgen} (reformatted for readability)}
+\caption{Generated typing rules for the if-else term, extending figure \ref{boolstrgen} (reformatted for readability)
+  \CR{The components of this function would be great to discuss in Section 3.  Here in Section 4, you may want to forward refernece the discussion about redundancy/possible optimisations (Section 4.2.2) and very concretely use this code and explain the changes you have in mind (for someone else to do in future work).}
+}
   \label{ifelsetrgen}
 \end{figure}
 
@@ -947,23 +959,27 @@ syn Type IfElse.type() {
 %\end{minipage}
 %\end{figure}
 As an example of rules utilising type variables, we can extend the Bools language with an if-else term.
+\CR{``Can extend'' sounds a bit arbitrary.  Can you motivate with Pierce (even if not exactly)?}
 As shown in the AST extension in figure \ref{ifelseast}, it consists of three terms: a conditional, a term to be evaluated if the condition is true and a condition to evaluate if false.
 A typing rule of this if-else term can be seen in figure \ref{ifelsetr}.
 The rule has three premises, the first of which declares the conditional must have the type \verb|Bool|.
-The next two declare that the two other children must be of the type \verb|a|, with the lowercase indicating a type variable.
+The next two declare that the two other children must be of the type \verb|a|, with the lowercase \CR{grammar} indicating a type variable.
 This type variable \verb|a| also subsequently appears in the resulting type of the if-else term.
 
+\CR{``Shown in Figure~\ref{reference}'' is the current preferred form in our field}
 The code for this rule is shown in figure \ref{ifelsetrgen}, and begins with three parameter declarations as in previous rules, followed by a new type variable declaration on line 6, which is instantiated to null.
 For each invocation of the type variable, a code section is generated, which checks if the type variable is still null, and if so assigns it to the type of the left-hand side term, or if it has been assigned checks whether the types match each other. Should any non-matches be found, a type error is thrown.
 
 The rest of the method is similar, with premises being checked -- including a redundant check of the type variables -- before returning the type variable, or a type error being thrown.
 
 \section{Research questions}
+
 \subsection{\rqone}
 Our project has shown that generating type checkers using RAGs is a viable solution for a number of different language constructs.
 %To assess our implementation, we'll go through the examples used by Pierce\cite{Pierce} to see which cases we can successfully express.
 To evaluate the completeness of our implementation, we refer to Pierce\cite{Pierce} as a reference work.
 The typing rules are introduced in chapter 8, starting with the simple examples shown in section \ref{sectionlanguage}.
+\CR{Please be clearer on which examples from Pierce you implemented and where support stops.}
 We have implemented support for simple type declarations, where a value or function always has a certain type.
 These simple rules are not of much interest in themselves but are an important backbone to the subsequent analysis.
 We also support type declarations with premises that must hold for the rule to apply, allowing us to express relationships between types and bringing with them the possibility of type errors.
@@ -974,19 +990,28 @@ This enables rules where the return type of an expression depends on its child e
 A major feature missing from our implementation is the concept of type environments or typing contexts, providing a mapping from variables and functions to types.
 This prevents us from generating type checkers for even simple general purpose languages.
 
+\CR{Please explain typing contexts and why/where they are important.  You can also reflect on whether typing contexts are necessary in the context of RAG-based analysis (cf. what we did in EDAP15).}
+
+\CR{I am missing the phrase ``syntax-directed'' here.}
+
 \subsection{\rqtwo}
-We have approached parsing typing rules into a JastAdd attribute \verb|type()|, which either returns a \verb|Type| value, or throws a runtime exception if the expression is invalidly typed.
+We have approached parsing typing rules into a JastAdd attribute \verb|type()|,
+\CR{parsing is the syntactic analysis of the input specification, you have done more than just parsing.}
+which either returns a \verb|Type| value, or throws a runtime exception if the expression is invalidly typed.
 
 We have chosen to represent the right-hand side of type equations, the types themselves, as an abstract AST class.
 While our current implementation only supports simple types, this representation gives us a lot of flexibility for future extensions.
 Parametric types, such as lists where the type of the list contains information about the types of its elements, could be expressed as simply as \lstinline{MyList : Type ::= Type;}.
 The current implementation of \lstinline[language=java]{matches()} would however consider all lists to match, without comparing the child nodes.
 Perhaps the default implementation could be extended to compare all child elements, or these more advanced types would require manually overriding the method.
+\CR{Recursive term equivalence can become tricky when you are dealing with type variables (cf. the Hindley-Milner inference exercise in EDAP15).}
+\CR{Type equality could also be expressed in terms of typing rules.  This approach is quite common with subtyping.}
 
 We have implemented premises as conditions of a single if-statement, where we check that each premise holds true before returning the type, or falling through to a type error if the premises do not hold.
 It might instead be worthwhile to check each condition individually, to be able to specify in the error message precisely which premises have failed and why.
 %This would perhaps make it easier to implement informative type errors, as you could report precisely which premise is failing.
 If paired with the current error handling of throwing an exception to convey type errors, it would make it harder to implement having multiple valid rules providing the type of an expression, as the first failure would seize the evaluation of the type.
+\CR{What do you mean by ``seize''?}
 An alternative error handling would suit it better, one able to collect multiple errors without seizing evaluation, perhaps merely adding all the errors to a list and checking whether it is empty before returning a type.
 
 The variables in the typing rules are compiled into regular Java variables containing the AST node.
@@ -996,18 +1021,27 @@ However, in the future it may become relevant to type these more specifically, t
 
 Type variables similarly are implemented as Java variables, though they are initiated as null, to represent the type variable's unassigned state.
 This is followed by a check for each point of use in the typing rule, to see whether the type variable is still unassigned and if so assign it.
-This approach leaves much room for improvement and optimisation, by finding the first use of each type variable during the rule compilation, and generating a single declaration statement initialising it to the type of the corresponding expression.
+This approach leaves much room for improvement \CR{no need to say ``much room for improvement'', just mention the specific disadvantages.} and optimisation, by finding the first use of each type variable during the rule compilation, and generating a single declaration statement initialising it to the type of the corresponding expression.
+\CR{I am missing a discussion of type variables and unification as we used them in EDAP15 for Hindley/Milner.}
 
 A cleaner solution to this might be view rules as a kind of pattern matching, where each rule is evaluated one by one until a matching one is found.
 Instead of reporting the reason any individual rule failed, the error might instead display all the rules it tried to apply, perhaps with a list of non-holding premises for each one.
+\CR{This is a good idea; you can even sort the rules by closest matches and only show the top ones if there are many.}
+
+\CR{Can you structure this subsection a bit more explicitly?  Could be subsubsections, but not necessarily needed; maybe a bullet list of
+challenges and for each challenge a bullet list of potential approaches could work?}
+
+\CR{Something about error handling would be good to discuss here}
 
 \subsection{\rqthree}
 %Splitting code between multiple JastAdd components (and java) can get messy
-Writing idiomatic JastAdd components often requires splitting your code into many different places.
-We attempted to keep each node in the tree responsible for generating the code it corresponds to, which avoids parent nodes having to check their children's structure with \verb|isInstanceOf|, but also means even generating a simple rule can require a dozen calls between different nodes.
+Writing idiomatic JastAdd components often requires splitting your \CR{Please don't address the reader directly}  code into many different places.
+We attempted to keep each node in the tree responsible for generating the code it corresponds to \CR{What does that mean?  You need to provide a bit more background}, which avoids parent nodes having to check their children's structure with \verb|isInstanceOf|, but also means even generating a simple rule can require a dozen calls between different nodes.
 There is a tradeoff to be made between the single responsibility of each component making it easy to verify its correctness, but the complicated interdependence making it hard to grasp the full picture.
+\CR{Overall I found it difficult to process this paragraph.}
 
 Using JastAdd simultaneously as a library and a build component
+\CR{(incomplete)}
 
 %Having to use a hacky method to access private JastAdd methods to parse a second AST at runtime. (Beyond jastadd's scope?)
 Some of the features we intended to support, such as verifying that typing rules correspond to valid nodes within the object language AST, were complicated by having to parse the object language AST at runtime, using JastAdd as a library rather than a build tool.
@@ -1016,8 +1050,15 @@ Unfortunately, the resulting data was hard to work with, and we could not alloca
 It may be that this use case is beyond the intended scope of JastAdd, or it is perhaps only poorly documented.
 In either case, while our experimentation has shown it to be technically possible, the complexity is worth bearing in mind for future work.
 
-Not being able to perform these error checks at runtime means our translation will emit nonfunctional typing definitions if a mistake is written in the typing rules.
+Not being able to perform these error checks at runtime
+\CR{at runtime of which component?}
+means our translation will emit nonfunctional typing definitions if a mistake is written in the typing rules.
 These errors will then go unreported until the output project is compiled or run, at which point the user will have to attempt to trace these errors back to the typing rule definition, to find the actual cause.
+\CR{NB: this is also somewhat true of JastAdd's own compilation approach, so there might be double indirection errors ...}
+
+\CR{This is all about technical challenges.  Do you also see conceptual challenges?  (You can be less specific here, but
+  some words about support for parametric polymorphism and/or subtyping could be nice; at the very least, something
+  about the relevance of syntax-directedness woudl be valuable.)}
 
 
 \chapter{Discussion} % allows for a longer discussion and interpretation of the results from the evaluation, including extrapolations and/or expected impact. Focus here on a broader view of the results, talking about the relation between the different finds.\footnote{Bad practice is to display graphs in Results and then describe them textually one by one in here. No! Both sections should have some discussion, but one targets individual finds and the other tries to bridge between these adopting a more overarching viewpoint.} This might also be a good place to describe your positive and negative experiences related to the work you carried out.
@@ -1026,7 +1067,7 @@ These errors will then go unreported until the output project is compiled or run
 %\section{Development learnings}
 \chapter{Conclusions} % should summarize your findings and possible improvements or recommendations.
 Our experiments have shown that reference attribute grammars are a flexible method for implementing type checker generators.
-Implementing the first top-to-bottom functioning product was challenging and took quite a lot of work, but extending it with additional features such as type variables turned out to be a surprisingly painless experience.
+Implementing the first top-to-bottom functioning product \CR{end-to-end prototype is what I would call it} was challenging and took quite a lot of work, but extending it with additional features such as type variables turned out to be a surprisingly painless experience.
 
 However, our compiler still has a long way to go before it can be used for real world use cases and general purpose languages.
 Chief among the missing features is the concept of environments, without which we are unable to support even common language features such as variables or functions.
@@ -1074,9 +1115,12 @@ Most of the work to support this is in place, though the first rule to fail woul
 These errors would either have to be caught, and only emitted if all rules had failed, or a new error handling system not based around exceptions could be introduced.
 Additionally, an extra layer of scoping would have to be introduced, to prevent variable naming collisions between the different rules.
 This could be solved simply by wrapping each rule within brackets, creating a separate scope for the evaluation of each rule.
+\CR{This is about name clashes in the generated code?  You may want to consider automatic relabelling here anyway (``this'', ``new'' etc. as type variable names are likely going to cause issues) }
 
 %add(int, int): int, add(double, double): double)
 \subsection{Better support for numbers, strings, etc.}
+
+\CR{Not sure that there is anything needed here}
 
 \subsection{Improved type checking algorithm}
 
