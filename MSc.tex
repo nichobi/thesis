@@ -72,7 +72,18 @@
 \date{\today}
 %\date{January 16, 2015}
 
-%\acknowledgements{
+% For questions to people reviewing, remove before finalizing
+\newcommand{\reviewquestion}[1]{\textcolor{red}{\begin{itemize}\item Question: #1\end{itemize}}}
+%\newcommand{\reviewquestion}[1]{}
+
+\acknowledgements{
+Sincere thanks to Christoph Reichenbach,
+whose enthusiasm for the subject inspired me to pursue this subject
+and whose guidance in matters of both implementation and writing were key to this thesis.
+Additional thanks to Niklas Fors for providing several valuable insights, greatly simplifying certain components and Alexandru Dura for providing some guidance to JastAdd internals.
+
+I would also like to thank my partner Lo-Isabel Krantz Andrée, my family, and Moritz for their support throughout the duration of this project.
+
 %If you want to thank people, do it here, on a separate right-hand page. Both the U.S. \textit{acknowledgments} and the British \textit{acknowledgements} spellings are acceptable.
 %
 %We would like to thank Lennart Andersson for his feedback on this template.
@@ -80,7 +91,7 @@
 %We would also like thank Camilla Lekebjer for her contribution on this template, as well as Magnus Hultin for his popular science summary class and example document.
 %
 %Thanks also go to the following (former) students for helping with feedback and suggestions on this template: Mikael Persson, Christoffer Lundgren, Mahmoud Nasser.
-%}
+}
 
 \theabstract{
 %Your abstract should capture, in English, the whole thesis with focus on the problem and solution in 150 words. It should be placed on a separate right-hand page, with an additional \textit{1cm} margin on both left and right. Avoid acronyms, footnotes, and references in the abstract if possible.
@@ -111,6 +122,11 @@ Furthermore, making changes to the typing rules of a language can require extens
 In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules, using JastAdd's implementation of reference attribute grammars.
 
 %TODO: Give an overview of the other sections
+The rest of this paper is outlined as follows.
+% This chapter introduces the
+Chapter 2 presents the necessary background information for the report.
+Chapter 3 describes the design and implementation of our program, followed by demonstrations of its results in chapter 4.
+Chapter 5 discusses the results in a more general sense, before the conclusion in chapter 6.
 
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge?
 \section{Research questions}
@@ -133,6 +149,8 @@ Their work is thereby largely focused on expressing typing rules within the limi
 We have a significantly different compilation target, JastAdd, which allows us to use reference attribute grammars to evaluate the typing relations, which we write in a more iterative approach.
 
 Additionally, their project defines a formalism for expressing typing rules within the Datalog language, ours defines a language which aims to keep as close as possible to the traditional inference rules used for typing rules, to minimise the difficulty of translation.
+
+\reviewquestion{Circular attributes?}
 
 
 \chapter{Background}
@@ -915,7 +933,7 @@ This could be solved simply by wrapping each rule within brackets, creating a se
 
 % Should use consistent formatting when it comes to Names ("FirstName LastName", or "F. LastName")
 %\printbibliography
-\makebibliography{MyMSc} % is a must in a scientific report. {\LaTeX} and \texttt{bibtex} offer great support for  handling references and automatically generating bibliographies.
+\makebibliography{MSc} % is a must in a scientific report. {\LaTeX} and \texttt{bibtex} offer great support for  handling references and automatically generating bibliographies.
 
 \begin{appendices} %should contain lengthy details of the experimental setup, mathematical proofs, code download information, and shorter code snippets. Avoid longer code listings. Source code should rather be made available for download on a website or on-line repository of your choosing.
 \chapter{Source code}
