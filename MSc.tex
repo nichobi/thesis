@@ -51,7 +51,7 @@
 % default is Master. Uncomment the following for "kandidatarbete"/Bachelor's thesis
 %\thesistype{Bachelor}{Kandidatarbete}
 
-\newcommand{\CR}[1]{\textcolor{cyan!70!black}{[\textbf{CR}:#1]}}
+\newcommand{\CR}[1]{\textcolor{green!60!black}{[\textbf{CR}:#1]}}
 
 %\title{Formatting a Master's Thesis}
 \title{Type Checker Generation using Reference Attribute Grammars}
@@ -121,13 +121,35 @@ Catching these mistakes as early as possible can prevent these bugs from ever re
   \url{https://dl.acm.org/doi/abs/10.1145/1985793.1985889}
   \url{https://www.usenix.org/legacy/event/sec04/tech/full_papers/johnson/johnson_html/}
   \url{https://ieeexplore.ieee.org/abstract/document/10190394}}
+\CR{These papers add static checkers on top of existing languages to find additional bugs; you can also
+  mention statically typed languages, but those generally don't require frequent changes to the type checker implementation, so they're less
+  compelling to motivate your work.}
 Type checkers are one of the most common static checking methods, ensuring that the correct data types are used, but creating a new type checker is often an arduous process, requiring large amounts of complex code.
 Furthermore, making changes to the typing rules of a language can require extensive rewrites in many different parts of the type checker's codebase.
 
 % Define the problem you are solving (or trying to solve).
+\CR{Prior work has already looked into pluggable type checkers.
+  Why is translating them into JastAdd interesting?
+  (aside from theoretical questions, you can also use
+  pragmatic reasons, such as integration into our courses.)}
 In this thesis we examine the feasibility of automating the writing of type checkers, based on the formal definition of the language's typing rules, using JastAdd's implementation of reference attribute grammars.
 
+\CR{Make clear to the reader what the challenges are:
+   How are these two formalisms similar, how do they differ (at a high level)?
+   You can use a simple typing rule as an example if it helps (very optional).
+   Hint: look at determinism in evaluation (syntax-directedness), unification,
+   but stick to intuition in this chapter; you can elaborate in Chapter 2 or later
+   if you think it helps.}
+
 %TODO: Give an overview of the other sections
+\CR{Usually you then put a high-level summary of the rest of the thesis here (not mentioning
+  chapters yet), something like ``we examine X and Y and introduce a strategy for Z.
+  We evaluate the approach against Foo, and demonstrate Bar.
+  Our case studies show Quux.
+  Overall, this initial exploration shows \ldots''}
+
+
+\CR{paper $\to$ thesis; also, this always comes at the very end of the introduction}
 The rest of this paper is outlined as follows.
 % This chapter introduces the
 Chapter 2 presents the necessary background information for the report.
@@ -136,73 +158,114 @@ Chapter 5 discusses the results in a more general sense, before the conclusion i
 
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge?
 \section{Research questions}
-To formulate our goals more concretely, we've set out to answer the following research questions:
-\newcommand{\rqone}{What kinds of typing rules can we translate through RAG?}
+To formulate our goals more concretely, we've \CR{Avoid contractions in technical writing} set out to answer the following research questions:
+\CR{Give the RQs numbers so you can refer to them later.  Common form: RQ1, RQ2 etc.; some authors use RQ2.3 if they split RQ2 into multiple subquestions (this can happen later).}
+\newcommand{\rqone}{What kinds of typing rules can we translate through \CR{``through?''} RAG?}
 \newcommand{\rqtwo}{How can we implement the translations and into what form?}
 \newcommand{\rqthree}{What are the potential issues of translating typing rules into JastAdd-based RAGs?}
 \begin{itemize}
-  \item \rqone
-  \item \rqtwo
-  \item \rqthree
+  \item \rqone \CR{``kinds'' of typing rules: right now the reader isn't aware that there even are different kinds (see my earlier comment on ``what the challenges are''-- sketching this out should suffice.)}
+  \item \rqtwo \CR{What does ``form'' mean, here?  How broad is ``implement''-- are you talking algorithms (which I think you are) or including technical challenges (which I think you have in the next RQ)?}
+  \item \rqthree \CR{I'd go with `challenges in translating' instead of `potential issues of translating', language-wise}
 \end{itemize}
+
 
 \section{Related work} % Maybe move to discussion?
 % Describe related work (literature study). Besides listing other work in the area, mention how is it related or relevant to your work. The tradition in some research area is to place this part at the end of the report (check with your supervisor).
 Pacak et al. implemented a compiler for generating incremental type checkers using Datalog\cite{Pacak}.
-While the goal is similar to ours, they take a different approach, by converting typing rules into the declarative logic programming language.
+While the goal is similar to ours, they take a different approach, by converting typing rules into the declarative logic programming language \CR{second half of this sentence confuses me}.
 
 Their work is thereby largely focused on expressing typing rules within the limits of the Datalog language, which can only compute finite relations.
-We have a significantly different compilation target, JastAdd, which allows us to use reference attribute grammars to evaluate the typing relations, which we write in a more iterative approach.
+We have a significantly different compilation target, JastAdd, which allows us to use reference attribute grammars to evaluate the typing relations, which we write in a more iterative \CR{unclear?} approach.
+\CR{Datalog is fully declarative, whereas JastAdd uses declarative rules that connect snippets of imperative Java code.  Is that what you meant?}
+\CR{Some more thoughts below to help make the distinction clearer (all optional):}
+\CR{Datalog has no direct notion of ASTs or other tree structures / algebraic terms, so trees must be encoded into relations.}
+\CR{Datalog has a simple, built-in notion of unification that can handle cases like testing sibling relations: $\textsf{Sibling}(x, y) :- Parent(p, x), \textsf{Parent}(p, y), x \ne y.$.
+    This is something you deal with later in JastAdd.}
 
 Additionally, their project defines a formalism for expressing typing rules within the Datalog language, ours defines a language which aims to keep as close as possible to the traditional inference rules used for typing rules, to minimise the difficulty of translation.
+\CR{I'd start with this difference-- the translation is targeting two rather different formalisms, which is all you need to justify the novelty.}
 
 \reviewquestion{Circular attributes?}
+\CR{Circular attributes: Recursion in typing rules: Datalog is built with support for ``infinite'' recursion (since it operates on finite domains,
+  it can use a special bottom-up evaluation scheme to ensure termination.)
+  If you need this in RAGs, it gets more complicated, but you'd need an example to explain this in the introduction-- since you don't directly address that in this work,
+  I wouldn't talk about it too much here (you could also skip it entirely here).  Minimum: talk about it in the discussion later.}
 
 
 \chapter{Background}
 %\section{Theory} % should contain the theoretical background needed to understand your work, if necessary.
+\CR{General: the first paragraphs should explain what the chapter is about and how/why it is relevant, at a high level.  The reader should come out of it thinkingr ``I know why I want to read this''}
 This chapter aims to provide all the background information required to understand the work presented in the rest of the report.
 The first section explains abstract syntax trees, which are extensively utilised in almost every stage of our project, both in terms of our implementation and the input to the program.
-The next section details type systems, by first introducing data types, then explaining the components required for a type system, followed by a description of static type checkers.
+\CR{Consider saying just a little more about them here, for readers who have no idea what ASTs are and why they matter for
+    analysing programs.}
+The next section details type systems \CR{Too much detail in the following:}, by first introducing data types, then explaining the components required for a type system, followed by a description of static type checkers.
+\CR{You can use \texttt{\textbackslash label\{labelname\}} and \texttt{\textbackslash ref\{labelname\}} to reference (sub)secttions, that's usually clearer than ``next section''.}
 
 \section{Abstract syntax trees}
+\CR{What's a syntax?}
 An abstract syntax tree (AST) is a tree-based representation of the syntax of a program.
 Each node in the tree represents a syntactic construct of the language, such as expressions, statements or declarations and the branches represent the structure.
-It's abstract in that it neglects to include all the concrete details of the syntax, but rather focuses on the structure of the program.
-Structural elements of the source code, such as parenthesis, commas and brackets, are no longer necessary, as the structure of the tree conveys this information.
+It's \CR{contraction} abstract in that it neglects to include all the concrete details of the syntax, but rather focuses on the structure of the program.
+Structural elements of the source code, such as parenthesis, commas and brackets, are no longer necessary, as the structure of the tree conveys this information \CR{what is ``this information'', concretely?}.
 A statement like \verb|if (true) then {1} else {0}| maybe instead be represented by an if-else node, with named branches pointing towards the condition and the two values.
+\CR{You could show an example, but at the very least I would like to read an argument for why the hierarchical structure of a tree is helpful.}
+\CR{You can find common examples for showing the value of ASTs over concrete syntax trees in the EDAN65 slides.}
 
 This layer of abstraction makes it easier to write analyses for the program, as we can focus on the key elements and structure.
+\CR{Is there a connection between the AST and the behaviour of the program?}
+
+\CR{Consider giving the syntax of a simple expression language in BNF here, since you're already discussing ``Type syntax'' later.}
 
 \section{Type theory}
-In this section we'll discuss the elements of type theory required to understand this thesis.
+In this section we'll \CR{contraction} discuss the elements of type theory required to understand this thesis.
 Firstly, we'll discuss what types are and give some examples of their use.
-Next, we'll describe type system, which form a relation between types and expressions.
+Next, we'll describe type system, which form\CR{forms} a relation between types and expressions.
 
 \subsection{Data types}
+\CR{think about the connection between types and values here.  You may even want to talk about values in a separate subsection.}
 Computer software generally needs to handle and manipulate several different types of data in one program, such as numbers or text.
 Most programming languages come with a number of built-in data types, from different kinds of numbers (integers, floating point) to strings or lists and arrays.
 
+\CR{if you discuss values, you can use the intuition of ``grouping values'' by certain properties (such as supported operations) to make your point clearer.}
 Different parts of programs may have different constraints on the types of expressions, such as a print function requiring a string of text, or a plus function requiring some kind of number.
+\CR{Very good point about types of expressions, but again, this is likely easier to understand by linking expressions and values.
+  I strongly recommend using a definition of the form ``all values are expressions, but not all expressions are values''.}
 
 \subsection{Type checking}
 There are two main approaches to ensuring that the aforementioned constraints are upheld, dynamic and static type-checking.
+\CR{Why would we even want to ensure that they are upheld?}
 Dynamic checking is done performed runtime, with each type checked only when needed.
 Static checking is performed on the code before it's run, usually as part of compilation, preventing many faulty programs from being run at all.
+\CR{Why would I want static checking?  Dynamic only checks when needed, isn't that more efficient?}
 
 As our project generates a static type checker, we will focus our explanations on that topic.
 Static checkers analyse the structure of the source code, often in the form of an abstract syntax tree.
-Conservative
+Conservative \CR{incomplete sentence?}
+
+\CR{One mental image that helped me a lot to understand types is to see values  on one side (let's say on the left) and their types on the other (let's say the right).
+  For each concrete (and possibly very complex) operator on the left hand side (e.g., $(+)$), we then get a small number of typing rules on the right-hand side.
+  This symmetry between ``concrete'' and ``abstract'' only works if you make values part of your cast of characters for this discussion.
+  The value of this mental image to your approach then becomes immediate: since operators correspond to AST nodes and typing rules are abstractoins
+  over operator behaviour, typing rules will abstract over the program semantics that are captured by individual AST nodes.
+}
 
 \subsection{Type systems}
 A type system consists of two parts, a type syntax, describing the available types of a language; and typing rules, denoting how types should be assigned to expressions within the language.
+\CR{Why do the types need a syntax?
+    (There are other approaches to types; for your own sanity, I recommend deferring to Pierce here and calling this ``typical approaches'')}
+
 \subsubsection{Type syntax}
 A type syntax is a definition of the valid types within a language.
+\CR{Is ``type syntax'' what Pierce calls it?  Not sure I've heard that term before; I don't think it's wrong, personally, but please check in case he uses a different term.}
 It can consist of fundamental types, such as integers or booleans.
 There may also be parameterised or composite types, for example lists may have a type parameter defining what values it can contain.
+\CR{A bit vague; consider giving an example.}
 
 \subsubsection{Typing rules}
 The typing relation, notated \lstinline{t : T}, is a link between the expressions of a language and the types of the type syntax.
+\CR{It is \emph{the} link, even.}
 The left-hand side is an expression in the object lanuage, typically written in its native syntax, the right-hand side a type from the aforementioned type syntax.
 
 Typing rules are a manner of inference rules, which in their simplest form, consist of no more than a typing relation.
@@ -218,7 +281,7 @@ Additionally, the typing rules in these examples have a name, given in parenthes
   \label{typingruleexampletrue}
 \end{figure}
 
-Typing rules may also have premises, a number of conditions which must hold for the typing rule to apply.
+Typing rules may also have premises, a number of conditions which \CR{\emph{that} must hold (``which'' relates a set to a superset: ``carrots, which are vegetables'', while ``that'' restricts a set to a subset: ``vegetables that are carrots'')} must hold for the typing rule to apply.
 The notational convention here is to put the premises above a bar, with the conclusion underneath it.
 
 \begin{figure}[h]
@@ -242,12 +305,21 @@ Above the bar are three premises, placing constraints on the three variables, wh
 The first constrains $t_1$ to the type bool, the second two constrain $t_2$ and $t_3$ to a type variable T, which represents any single arbitrary type within the type syntax.
 While T may be any type, it must consistently be the same type within any single evaluation of the rule, i.e. the two terms must have the same type.
 This T also appears in the conclusion, as the resulting type of the if-expression, meaning the result of the entire expression will be that of the $t_2$ and $t_3$ terms.
+\newcommand{\ty}[1]{\textcolor{blue!20!black}{\textsf{#1}}}
+\newcommand{\tyvar}[1]{\ty{\textcolor{cyan!50!black}{#1}}}
+\CR{Consider typesetting T differently, e.g. as \tyvar{T}}
+\CR{\tyvar{T}, $t_1$, $t_2$, $t_3$ are \emph{free} variables here, logically speaking}.
+\CR{Please explain the purpose of typing rules in static type checking.  Using just your two examples you would be able to
+  show a well-typed program, and if you add one more rule (e.g. for integers), you can show a type error.  No need to build
+  the full derivation tree, but it's important to mention recursion here.  This entire bit may be worth a separate subsubsection.}
 
 \section{Reference Attribute Grammars}
 This section introduces the subject of Reference Attribute Grammars (RAGs), first explaining the theory behind them, then introducing JastAdd, an implementation of RAGs within a Java meta-compiliation system\cite{jastadd}.
 
 \subsection{Reference Attribute Grammars}
 Reference Attribute Grammars (RAGs) are an extension to Attribute Grammars (AGs), a formalism used for specifying the semantics of programming languages.
+\CR{Generally only for the static semantics (RAGs can also do dynamic semantics, if you allow circular attributes, but that's not worth mentioning here.)
+Please also connect ``semantics'' to ``type checking'' (via ``static semantics'')}
 AGs provide a systematic way to define computations on the nodes of an abstract syntax tree, associating attributes with language constructs and are commonly used in the context of compiler construction, where they help define the translation of source code into executable code\cite{AGs}.
 
 RAGs extend these properties by introducing a new kind of attribute, allowing references to other nodes in the AST, and through the references accessing the attributes of other nodes.
@@ -255,6 +327,8 @@ This provides a simplified and more flexible method for interconnectedness betwe
 
 \subsection{JastAdd}
 JastAdd is an implementation of RAGs for Java, offering a flexible system for writing language analysis in an object-oriented fashion.
+\CR{It's worth telling the reader here why you are explaining some details about JastAdd.}
+
 \cite{JastAdd}
 \subsubsection{AST specification}\label{astdef}
 One of the key components of a JastAdd projects are the \verb|.ast| files, which declare the structure of the abstract syntax tree.
@@ -263,6 +337,8 @@ These AST classes can have a variety of forms, supporting both abstract classes 
 For a detailed overview of the syntax, see the reference manual\cite{jastaddref}.
 
 \subsubsection{RAG Modules}
+\CR{Your example uses Non-Terminal Attributes (NTAs) \url{https://dl.acm.org/doi/pdf/10.1145/74818.74830}, which are
+not a necessary feature for RAGs.  Please introduce them in a seprate section: you can very directly connect them to the idea of ``type syntax''.}
 \begin{figure}[h]
 \begin{lstlisting}[language=jrag]
 aspect TypingRules {
@@ -279,12 +355,20 @@ The files use a syntax very similar to that of Java to declare attributes of a v
 
 \chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
 
+\CR{Missing: introduction to this chapter'}
+
+
 \section{Architecture}
 In this section we'll be providing an overview of our architecture.
+\CR{Stylistically, technical documents should avoid discussing the process of reading (it's not as frowned upon as speaking directly to the reader, though), so I recommend just saying that the figure ``provides an overview over...''}
 Since it contains many different components, it may be helpful to refer to the overview graph in figure \ref{overviewgraph} while reading.
+\CR{Please put the following in the caption of the figure instead.}
 It represents the flow of the program, with components and artefacts (represented as rectangular boxes) with arrows linking them to actions (elliptical boxes) which in turn have arrows to the new components and artefacts they produce.
 The dashed arrows from represent links from the template components that exist in the current experimental state of the project, but in a finished product would instead link to component from the object language's own compilation environment.
 %It uses rectangular boxes to represent the concrete data or artefacts of the procedure, and elliptical boxes to represent the actions performed with them.
+
+\CR{You still want an introduction to this section that explains what is following and why}
+
 \begin{figure}[]
   \resizebox{\textwidth}{!}{%
   \begin{tikzpicture}[
@@ -358,7 +442,8 @@ The dashed arrows from represent links from the template components that exist i
 
   \end{tikzpicture}
   }
-  \caption{An overview of the project components and flow.}
+  \caption{An overview of the project components and flow. \CR{Can you mark, e.g. via colours, the parts that the user provides,
+           and the parts that will be in the generated output project?}}
   \label{overviewgraph}
 \end{figure}
 
@@ -368,6 +453,13 @@ Custom DSL
 Include typing rules AST specification (or BNF?)
 ASCII representation of natural deduction %BNF (is it BNF?)
 \subsubsection{Language}\label{sectionlanguage}
+\CR{After reading, I would now say that it's preferable to me if you keep the language definition separate
+  from its implementation.  You can use Figure 3.4 as the abstract syntax, to complement the current discussion.
+  This would be before the current 3.1, then.
+  An advantage of this is that you can then start your ``Architecture'' discussion (in 3.2) by mentioning
+  the complex dependencies, i.e., that processing a type system specification requires you to know the abstract syntax
+  of the object language as well as of the types.}
+
 
 \begin{figure}[h]
 \centering
@@ -431,21 +523,34 @@ If(t1, t2, t3): t
 %No environments
 
 To express typing rules, we have defined an ASCII representation of the natural semantics syntax used by Pierce\cite{pierce}.
-Our language can express a subset of the notation used by Pierce, with some differences and limitations.
+Our language can express a subset of the notation used by Pierce, with some differences and limitations
+\CR{either forward reference to the discussion of the limitations, or remove the ``limitations'' bit here (you already say ``subset'', after all) and discuss those limitations after you define the language.}.
 
 Figures \ref{trexampletrue} and \ref{trexampleif} show two rules from Pierce in both their original syntax and our ASCII representation side by side.
 The former figure describes a simple rule named T-True, which assigns the \verb|true| expression the type \verb|Bool|.
 
 The largest difference can be seen in the expression to be typed, where Pierce uses the object language's native syntactic form, whereas our representation is based on the corresponding AST nodes.
+\CR{Given that it's nontrivial to separate out the different changes, I recommend first enumerating the differences abstractly and then discussing how the changes manifest in the figures, rather than starting with the figures to ``derive'' the differences.}
 In the first example, the difference is minor (\verb|true| and \verb|True| respectively) but the difference is more apparent in figure \ref{trexampleif}, where instead of the full syntactic form, the expression is written as an AST node with its children represented as parameters.
 %Note the difference between the \verb|true| written in Pierce, representing the native syntactic form of the expression, and the \verb|True| in the ASCII representation, representing the name of the corresponding AST node.
 %This difference is more apparent in figure \ref{trexampleif}, where instead of the full syntactic form, the expression is written as an AST node with its children represented as parameters.
 This change is necessary to allow us to type arbitrary languages without needing to understand their syntax and grammar, though it does make translating rules from one syntax to the other less straightforward.
+\CR{Optional: you can mention Alexandru's paper about how one could add metavariables into ``native'' syntax: \url{https://dl.acm.org/doi/pdf/10.1145/3485542}
+  (since this part has already been done, it's not something you needed to explore)}
+\CR{Capitalising the AST node types is consistent with their naming in JastAdd-- worth pointing out.}
 
 Another difference is the use of the metavariable \verb|T|, which has been switched to the lowercase \verb|t| in order to distinguish concrete types and type variables.
 This change also aligns the syntax for type terms with the regular terms, where concrete nodes (such as \verb|If|) are written uppercase and variables (\verb|t1|, \verb|t2|, \verb|t3|) in lowercase.
+\CR{I generally recommend avoiding the passive voice, but the use below is an example that would be OK}
 Commas are also used to separate the premises, and the horizontal line separating premises from the conclusion is represented as a series of dashes.
 
+\CR{Important: this affects numbers used at the type level only (which is an advanced feature mostly used in undecidable
+  typesystems like the Calculus of Constructions), and it wouldn't matter here since you can't use \ty{Succ} as a parametric
+  type anyway (cf. igure 3.4).
+  My problem is that right now this reads as if you can't typecheck programs with Integer literals,
+  but those would be e.g. \textsf{Integer} AST nodes, which (to my reading) you would have no trouble writing typing rules for.
+  (you never need to touch the actual lexeme that contains the character string that encodes the integer, in traditional
+  type analysis).  So you shouldn't actually have any real-life problem here.}
 Numerical values have not been implemented, but natural numbers can be expressed using Peano numbers\cite{peano}, utilising a zero value and successor function which represents the number incremented by one.
 If a language has the syntax \verb|0 + 1| it may instead be represented as \verb|Add(Zero, Succ(Zero))|.
 
@@ -457,6 +562,7 @@ The tokens are passed on to Beaver along with a parser definition in extended Ba
 
 
 \subsubsection{Abstract syntax tree}\label{typingrulesast}
+\CR{I would give this AST/BNF a more specific name here, to distinguish it from the other two (as done nicely already in Figure 3.1)}
 \begin{figure}[h]
 \begin{lstlisting}[]
 RuleSet ::= Rule*;
@@ -477,6 +583,7 @@ TyVar : TyTerm ::= <ID>;
   \caption{Typing rules abstract syntax tree specification}
   \label{trastspec}
 \end{figure}
+\CR{The syntax doesn't allow parametric types; please make that explicit here.}
 
 The abstract syntax tree for the typing rules language consists of a \lstinline{RuleSet} root node.
 The root node contains only a list of rules, where each rule has a name, a conclusion and a list of premises.
@@ -486,14 +593,18 @@ Both conclusion and premises are represented by the abstract HasType node, consi
 For the conclusion, this node represents what type should be assigned to the term on the left, whereas for the premises, the node represents a requirement for the node on the left to have the type on the right.
 
 \subsection{Template}
-In addition to the compiled files, there are a number of files that are added to the output file that are identical for all generated type checkers, which we refer to as the template.
+In addition to the compiled files \CR{What are the ``compiled files?''}, there are a number of files that are added to the output file that are identical for all generated type checkers, which we refer to as the template.
 Some of these are key components of the type checker, but others are dummy components included solely for convenience of testing.
 We expect that in a real world use case, our software would integrate into an object language's compiler pipeline, and utilise its own parser and project files to provide the abstract syntax tree for our type checking to tie into.
 For testing purposes, we've written generic versions of these components, which work for any supported object language.
+\CR{``Templates'' are usually things that are mostly fixed but have holes to be filled in.  I would call what you describe here the ``support library''}
+
 \subsubsection{Parser}\label{treebasedparser}
+\CR{Parser for what?}
+\CR{Is there a conection between this section and Section~\ref{typingrulesparser} wrt parsing terms of the object language?}
 For testing purposes, our template comes with a generic tree-based parser.
 Programs are written as a tree of AST node names followed by potential parenthesis within which a comma separated list of child nodes are written.
-It recursively parses the tree, using Java's reflection API to find a class with a matching name, and a constructor with parameters of the same amount and types.
+It \CR{what?} recursively parses the tree, using Java's reflection API to find a class with a matching name, and a constructor with parameters of the same amount and types.
 Figure \ref{boolinputexample} shows an example input file for the Bools language, which will be discussed further in section \ref{boolsast}.
 
 \begin{figure}[h]
@@ -515,17 +626,33 @@ Expression(
 This approach does have the issue of occasionally parsing invalid programs, due to the reflection API finding an additional parameterless default constructor.
 This leads the parser to always accept nodes written with no children, such as \lstinline{Expression(Or())}, even if the AST specification requires them.
 These children will be null, causing issues further down the line, though as this parser is only intended for testing it is of little concern.
+\CR{Does this also apply to the analysis of typing rules?  If so, you can mention it as ``future work''
+  or describe how it could be fixed (it's not a fundamental limitation, so nothing that warrants a deeper discussion)}
 
 \subsubsection{Project files}\label{projectfiles}
 For ease of use the compiler will output a complete runnable Gradle project.
 It can parse simplified tree-representations of programs, and utilise these to perform the type checking.
 
+\CR{Can you elaborate on if/how this would integrate with an existing language implementation?
+  I've always interpreted everything as that you start with some `objectlanguage.jar' file of an existing language
+  (given that you use reflection), and you get out
+  a fresh Gradle project that uses that `objectlanguage.jar' for parsing and AST construction,
+  but since you generate JastAdd source code, you can't really (to my understanding) add the `type()' attribute etc.\@
+  to the existing implementation, since JastAdd needs to run over the source jrag files.
+  Going by your overview figure, I now wonder if the generated file also incorporates all of the source code of the original
+  project?  Or do you reconstruct the AST specification via reflection somehow and simply mirror it in the generated
+  project (which would lead to two different AST representations, but with a straightforward mapping)?}
+
+
 \subsubsection{Type checking aspect}\label{typecheckingaspect}
 The type checking aspect contains the declaration of the \lstinline{type()} attribute for all AST nodes, as well as a default implementation.
 This default implementation immediately produces a type error, to cause an error when the type of an expression not defined in the typing rules is demanded.
 
+\CR{The details of this section (esp.\@ the bit below) might fit better into Section~\ref{typingrulecompiler}?}
+\CR{What is ``type matching''?  I am not familiar with this term, and you haven't introduced it before.}
 It also contains the implementation of the type matching method, which can be seen in figure \ref{typematches}.
 It's defined for all \lstinline{Type} nodes, and checks whether the type's class is equal to or a subclass of the parameter type.
+\CR{So this is not an equivalence relation, but a partial order?  What does that mean wrt how it is used by the implementation of the type checker?}
 
 \begin{figure}[h]
   \begin{lstlisting}[language=jrag]
@@ -556,7 +683,7 @@ syn boolean Type.matches(Type t) {
 \section{Implementation}\label{typingrulecompiler} % if your work involved building an artefact/implementation, give the details here. Note, that this should not, as a rule, be a chronological description of your efforts, but a view of the result. There is a place for insights and lamentation later on in the report, in the Discussion section.
 
 %\subsection{Type checker generation}
-The type checker generation is based on a single-responsibility principle, where each node of the abstract syntax tree is responsible for generating the code it corresponds to.
+The type checker generation is based on a single-responsibility principle, where each node of the abstract syntax tree (of \emph{which} of the three (or four?) ASTs?) is responsible for generating the code it corresponds to \CR{Not sure what you mean}.
 Once typing rules have been parsed, we end up with an abstract syntax tree, in the form of figure \ref{trastspec}, where the \verb|RuleSet| is the root node.
 From the root node, calls propagate down the tree to fill in increasingly specific sections of the code.
 
@@ -577,10 +704,11 @@ Firstly, the algorithm checks if the number of premises is zero, in which case i
 If there are premises, it first generates code for the declarations of variables and type variables.
 This is followed by an if-statement to test whether the premises hold true, containing a return statement.
 Should the premises not hold, a type error is produced.
+\CR{What if there are multiple rules that apply to the same AST node?  E.g., one rule that allows \ty{Int} addition and one that allows \ty{String} addition.}
 
 %\subsubsection{Parameters}
 \subsection{Parameters}
-When the typing rules concern a node with parameters, these can be named arbitrarily, and a variable with the same name will be instantiated at the beginning of the method, fetching the corresponding child node by index.
+When the typing rules concern a node with parameters, these can be named arbitrarily \CR{Who does the naming?  Why is the ``arbitrarily'' bit important?}\CR{ Will this work if the type system specification has a type variable called ``this'' or ``null'' or ``class''?}, and a variable with the same name will be instantiated at the beginning of the method, fetching the corresponding child node by index.
 These variables are then utilised in later premises or type variable declarations.
 
 %\subsubsection{Premises/control flow}
@@ -588,21 +716,37 @@ These variables are then utilised in later premises or type variable declaration
 The rule's premises are translated into an if-statement, which checks all types using a method \verb|matches| added to all Type nodes.
 
 The current implementation of \verb|Type.matches(Type t)| checks that the Type it is called on is either of the same class or a subtype of the type \verb|t|.
+\CR{is ``matches'' a good name for something that is not symmetric?}
 This allows the language limited sub-typing at the type checker generation step, though the pros and cons of this haven't been evaluated.
+\CR{Can you give an example of a case where this is helpful, and one example where it might be troublesome?
+Let's use the ``if'' rule as an example.  If $\ty{Number} :> \ty{Int}$ (\ty{Number} is a supertype of \ty{Int}), what type will I infer if $t_2 = \ty{Number}$ and $t_3 = \ty{Int}$?  How about the other way around?}
 It is also possible to override the \verb|matches| implementation for a specific Type, by adding a definition to a JastAdd aspect included in the output type checker.
+\CR{This sounds like this is a way to support ``ad-hoc type polymorphism''?}
 
 %\subsubsection{Type variables}
 \subsection{Type variables}
-In the case of type variables, the generated code takes a dynamic approach to simplify the implementation.
+In the case of type variables, the generated code takes a dynamic approach \CR{Meaning?} to simplify the implementation.
 Each type variable that appears in the conclusion is instantiated to a null value, and the code generated by each premise first checks if the value is still null and either assigns the variable its own type or tests to make sure the existing type matches its own.
+\CR{Is there a hidden order dependency? (Cf. my earlier question about ``matches'')}
+
+\CR{Overall, I am not convinced that this strategy for presenting the type checking algorithm
+  is very effective (though it might be better for someone who is reading the source code at the same time).
+  I would propose to merge 3.2.2, 3.2.3, 3.2.4, 3.2.5, and to split them into (a) the type checking algorithm
+  (while ignoring the code generation bit), and (b) the code generation aspect.  I.e., for (a), pretend that you are
+  interpreting the typing rules instead of compiling them, and please try to present an algorithm that captures
+  the check.  The algorithm can be in plain English with bullet points / numbered sub-steps, or in some pseudo-formal
+  notation (``foreach premise $p$ in rule $r$ ...''), as long as it is clear.}
+
 
 %\subsubsection{Error handling}\label{errorhandling}
 \subsection{Error handling}\label{errorhandling}
 The current error handling consists of throwing a runtime exception at the first discovered type error, ceasing the type checking immediately.
 This method was chosen solely for its simplicity of implementation, rather than its functionality.
 
-It provides a stack trace allowing you to see where in the type checking code the error occurs (such as what typing rule fails), but doesn't currently provide any information about what section of the input program causes the error.
+It provides a stack trace allowing you \CR{don't address reader directly} to see where in the type checking code the error occurs (such as what typing rule fails), but doesn't currently provide any information about what section of the input program causes the error.
 This tends to result in errors that are more useful for debugging the typing rule implementation, rather than providing useful information to the user of the type checker, where there is much room for improvements.
+
+\CR{This section is needlessly apologetic-- error handling was not the focus of your work.  You can add a forward reference to 6.1.2, though.}
 
 %Once typing rules have been parsed, we end up with an abstract syntax tree, in the form of figure \ref{trastspec}, where the \verb|RuleSet| is the root node.
 %The \verb|RuleSet| node consists of a list of \verb|Rule| nodes, and begins by sorting each rule by which object language node it describes.
