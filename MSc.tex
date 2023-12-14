@@ -158,7 +158,7 @@ Chapter 5 discusses the results in a more general sense, before the conclusion i
 
 % Specify your contributions. What does this particular work/report bring to the research are or to the body of knowledge?
 \section{Research questions}
-To formulate our goals more concretely, we've \CR{Avoid contractions in technical writing} set out to answer the following research questions:
+To formulate our goals more concretely, we have \CR{Avoid contractions in technical writing} set out to answer the following research questions:
 \CR{Give the RQs numbers so you can refer to them later.  Common form: RQ1, RQ2 etc.; some authors use RQ2.3 if they split RQ2 into multiple subquestions (this can happen later).}
 \newcommand{\rqone}{What kinds of typing rules can we translate through \CR{``through?''} RAG?}
 \newcommand{\rqtwo}{How can we implement the translations and into what form?}
@@ -219,9 +219,9 @@ This layer of abstraction makes it easier to write analyses for the program, as 
 \CR{Consider giving the syntax of a simple expression language in BNF here, since you're already discussing ``Type syntax'' later.}
 
 \section{Type theory}
-In this section we'll \CR{contraction} discuss the elements of type theory required to understand this thesis.
-Firstly, we'll discuss what types are and give some examples of their use.
-Next, we'll describe type system, which form\CR{forms} a relation between types and expressions.
+In this section we will discuss the elements of type theory required to understand this thesis.
+Firstly, we will discuss what types are and give some examples of their use.
+Next, we will describe type systems, which form a relation between types and expressions.
 
 \subsection{Data types}
 \CR{think about the connection between types and values here.  You may even want to talk about values in a separate subsection.}
@@ -237,7 +237,7 @@ Different parts of programs may have different constraints on the types of expre
 There are two main approaches to ensuring that the aforementioned constraints are upheld, dynamic and static type-checking.
 \CR{Why would we even want to ensure that they are upheld?}
 Dynamic checking is done performed runtime, with each type checked only when needed.
-Static checking is performed on the code before it's run, usually as part of compilation, preventing many faulty programs from being run at all.
+Static checking is performed on the code before it is run, usually as part of compilation, preventing many faulty programs from being run at all.
 \CR{Why would I want static checking?  Dynamic only checks when needed, isn't that more efficient?}
 
 As our project generates a static type checker, we will focus our explanations on that topic.
@@ -359,7 +359,7 @@ The files use a syntax very similar to that of Java to declare attributes of a v
 
 
 \section{Architecture}
-In this section we'll be providing an overview of our architecture.
+In this section we will be providing an overview of our architecture.
 \CR{Stylistically, technical documents should avoid discussing the process of reading (it's not as frowned upon as speaking directly to the reader, though), so I recommend just saying that the figure ``provides an overview over...''}
 Since it contains many different components, it may be helpful to refer to the overview graph in figure \ref{overviewgraph} while reading.
 \CR{Please put the following in the caption of the figure instead.}
@@ -596,7 +596,7 @@ For the conclusion, this node represents what type should be assigned to the ter
 In addition to the compiled files \CR{What are the ``compiled files?''}, there are a number of files that are added to the output file that are identical for all generated type checkers, which we refer to as the template.
 Some of these are key components of the type checker, but others are dummy components included solely for convenience of testing.
 We expect that in a real world use case, our software would integrate into an object language's compiler pipeline, and utilise its own parser and project files to provide the abstract syntax tree for our type checking to tie into.
-For testing purposes, we've written generic versions of these components, which work for any supported object language.
+For testing purposes, we have written generic versions of these components, which work for any supported object language.
 \CR{``Templates'' are usually things that are mostly fixed but have holes to be filled in.  I would call what you describe here the ``support library''}
 
 \subsubsection{Parser}\label{treebasedparser}
@@ -651,7 +651,7 @@ This default implementation immediately produces a type error, to cause an error
 \CR{The details of this section (esp.\@ the bit below) might fit better into Section~\ref{typingrulecompiler}?}
 \CR{What is ``type matching''?  I am not familiar with this term, and you haven't introduced it before.}
 It also contains the implementation of the type matching method, which can be seen in figure \ref{typematches}.
-It's defined for all \lstinline{Type} nodes, and checks whether the type's class is equal to or a subclass of the parameter type.
+It is defined for all \lstinline{Type} nodes, and checks whether the type's class is equal to or a subclass of the parameter type.
 \CR{So this is not an equivalence relation, but a partial order?  What does that mean wrt how it is used by the implementation of the type checker?}
 
 \begin{figure}[h]
@@ -717,7 +717,7 @@ The rule's premises are translated into an if-statement, which checks all types 
 
 The current implementation of \verb|Type.matches(Type t)| checks that the Type it is called on is either of the same class or a subtype of the type \verb|t|.
 \CR{is ``matches'' a good name for something that is not symmetric?}
-This allows the language limited sub-typing at the type checker generation step, though the pros and cons of this haven't been evaluated.
+This allows the language limited sub-typing at the type checker generation step, though the pros and cons of this have not been evaluated.
 \CR{Can you give an example of a case where this is helpful, and one example where it might be troublesome?
 Let's use the ``if'' rule as an example.  If $\ty{Number} :> \ty{Int}$ (\ty{Number} is a supertype of \ty{Int}), what type will I infer if $t_2 = \ty{Number}$ and $t_3 = \ty{Int}$?  How about the other way around?}
 It is also possible to override the \verb|matches| implementation for a specific Type, by adding a definition to a JastAdd aspect included in the output type checker.
@@ -964,11 +964,11 @@ Our project has shown that generating type checkers using RAGs is a viable solut
 %To assess our implementation, we'll go through the examples used by Pierce\cite{Pierce} to see which cases we can successfully express.
 To evaluate the completeness of our implementation, we refer to Pierce\cite{Pierce} as a reference work.
 The typing rules are introduced in chapter 8, starting with the simple examples shown in section \ref{sectionlanguage}.
-We've implemented support for simple type declarations, where a value or function always has a certain type.
-These simple rules aren't of much interest in themselves but are an important backbone to the subsequent analysis.
+We have implemented support for simple type declarations, where a value or function always has a certain type.
+These simple rules are not of much interest in themselves but are an important backbone to the subsequent analysis.
 We also support type declarations with premises that must hold for the rule to apply, allowing us to express relationships between types and bringing with them the possibility of type errors.
 
-Type variables extend these relationships further by providing a layer of abstraction, allowing us to write rules where the types aren't precisely defined.
+Type variables extend these relationships further by providing a layer of abstraction, allowing us to write rules where the types are not precisely defined.
 This enables rules where the return type of an expression depends on its child expressions, or where child expressions must have the same types.
 
 A major feature missing from our implementation is the concept of type environments or typing contexts, providing a mapping from variables and functions to types.
@@ -977,13 +977,13 @@ This prevents us from generating type checkers for even simple general purpose l
 \subsection{\rqtwo}
 We have approached parsing typing rules into a JastAdd attribute \verb|type()|, which either returns a \verb|Type| value, or throws a runtime exception if the expression is invalidly typed.
 
-We've chosen to represent the right-hand side of type equations, the types themselves, as an abstract AST class.
+We have chosen to represent the right-hand side of type equations, the types themselves, as an abstract AST class.
 While our current implementation only supports simple types, this representation gives us a lot of flexibility for future extensions.
 Parametric types, such as lists where the type of the list contains information about the types of its elements, could be expressed as simply as \lstinline{MyList : Type ::= Type;}.
 The current implementation of \lstinline[language=java]{matches()} would however consider all lists to match, without comparing the child nodes.
 Perhaps the default implementation could be extended to compare all child elements, or these more advanced types would require manually overriding the method.
 
-We've implemented premises as conditions of a single if-statement, where we check that each premise holds true before returning the type, or falling through to a type error if the premises don't hold.
+We have implemented premises as conditions of a single if-statement, where we check that each premise holds true before returning the type, or falling through to a type error if the premises do not hold.
 It might instead be worthwhile to check each condition individually, to be able to specify in the error message precisely which premises have failed and why.
 %This would perhaps make it easier to implement informative type errors, as you could report precisely which premise is failing.
 If paired with the current error handling of throwing an exception to convey type errors, it would make it harder to implement having multiple valid rules providing the type of an expression, as the first failure would seize the evaluation of the type.
@@ -1005,7 +1005,7 @@ Instead of reporting the reason any individual rule failed, the error might inst
 %Splitting code between multiple JastAdd components (and java) can get messy
 Writing idiomatic JastAdd components often requires splitting your code into many different places.
 We attempted to keep each node in the tree responsible for generating the code it corresponds to, which avoids parent nodes having to check their children's structure with \verb|isInstanceOf|, but also means even generating a simple rule can require a dozen calls between different nodes.
-There's a tradeoff to be made between the single responsibility of each component making it easy to verify its correctness, but the complicated interdependence making it hard to grasp the full picture.
+There is a tradeoff to be made between the single responsibility of each component making it easy to verify its correctness, but the complicated interdependence making it hard to grasp the full picture.
 
 Using JastAdd simultaneously as a library and a build component
 
@@ -1029,7 +1029,7 @@ Our experiments have shown that reference attribute grammars are a flexible meth
 Implementing the first top-to-bottom functioning product was challenging and took quite a lot of work, but extending it with additional features such as type variables turned out to be a surprisingly painless experience.
 
 However, our compiler still has a long way to go before it can be used for real world use cases and general purpose languages.
-Chief among the missing features is the concept of environments, without which we're unable to support even common language features such as variables or functions.
+Chief among the missing features is the concept of environments, without which we are unable to support even common language features such as variables or functions.
 
 %\section{Summary of findings}
 \section{Future work}
@@ -1041,7 +1041,7 @@ The essence of environments is the mapping of variables or functions to types, a
 A method often used by traditional type checkers is a symbol table, a separate data structure mapping language constructs to their types.
 In our case, we may instead be able to leverage our reference attribute grammars to store the information within the AST.
 By connecting each use of a variable or function to the AST node representing its declaration site, we could utilise the node to store the type information.
-This approach would however also have to consider the typing of external language constructs, such as built-in functions or those imported from external libraries, for which we wouldn't have access to the declaration site.
+This approach would however also have to consider the typing of external language constructs, such as built-in functions or those imported from external libraries, for which we would not have access to the declaration site.
 
 %An additional concern is that of scoping, which different languages may have different rules for.
 
@@ -1061,10 +1061,10 @@ This implementation would also need new functionality to collect the error messa
 \subsection{Verify rules against AST}
 Major improvements to the user experience could be made by tying the typing rules to the object language AST before generating the type checker.
 Currently, there are no checks in place to verify the completeness of the typing rules.
-If a user accidentally leaves out the typing rule for a certain construct, they'll receive no warning until the outputted type checker attempts to check the expression's type.
+If a user accidentally leaves out the typing rule for a certain construct, they will receive no warning until the outputted type checker attempts to check the expression's type.
 
 Similarly, no checks are made to ensure the nodes described in the typing rules actually exist within the language's AST.
-Our project will compile invalid or misspelled typing rules without complaint, leading to errors which won't be caught until the outputted type checker is attempted to be compiled.
+Our project will compile invalid or misspelled typing rules without complaint, leading to errors which will not be caught until the outputted type checker is attempted to be compiled.
 
 \subsection{Handle multiple rules for the same node}
 In type systems it is generally considered valid to have multiple typing rules for the same construct, with different, non-intersecting prerequisites.
