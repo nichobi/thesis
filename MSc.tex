@@ -51,6 +51,8 @@
 % default is Master. Uncomment the following for "kandidatarbete"/Bachelor's thesis
 %\thesistype{Bachelor}{Kandidatarbete}
 
+\newcommand{\CR}[1]{\textcolor{cyan!70!black}{[\textbf{CR}:#1]}}
+
 %\title{Formatting a Master's Thesis}
 \title{Type Checker Generation using Reference Attribute Grammars}
 \begin{otherlanguage}{swedish}
@@ -115,6 +117,10 @@ I would also like to thank my partner Lo-Isabel Krantz Andrée, my family, and M
 % Give the context of your work, have a short introduction to the area.
 While writing software, developers often make mistakes.
 Catching these mistakes as early as possible can prevent these bugs from ever reaching production code.
+\CR{Possible papers to cite as evidence:
+  \url{https://dl.acm.org/doi/abs/10.1145/1985793.1985889}
+  \url{https://www.usenix.org/legacy/event/sec04/tech/full_papers/johnson/johnson_html/}
+  \url{https://ieeexplore.ieee.org/abstract/document/10190394}}
 Type checkers are one of the most common static checking methods, ensuring that the correct data types are used, but creating a new type checker is often an arduous process, requiring large amounts of complex code.
 Furthermore, making changes to the typing rules of a language can require extensive rewrites in many different parts of the type checker's codebase.
 
