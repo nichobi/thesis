@@ -31,6 +31,16 @@
   isbn="978-3-540-49939-8"
 }
 
+@article{TinkerType,
+  title={{TinkerType}: a language for playing with formal systems},
+  author={Michael Y. Levin and Benjamin C. Pierce},
+  journal={Journal of Functional Programming},
+  year={2003},
+  volume={13},
+  pages={295 - 316},
+  url={https://api.semanticscholar.org/CorpusID:9655326}
+}
+
 # ==Background==
 @Inbook{Hedin2011,
   author="Hedin, G{\"o}rel",
@@ -112,3 +122,85 @@ doi = {10.1016/S1571-0661(04)80920-4}
 	year = {},
 	note = {[Accessed 28-11-2023]},
 }
+
+# ==Introduction==
+@inproceedings{10.1145/1985793.1985889,
+author = {Dietl, Werner and Dietzel, Stephanie and Ernst, Michael D. and Mu\c{s}lu, Kivan\c{c} and Schiller, Todd W.},
+title = {Building and Using Pluggable Type-Checkers},
+year = {2011},
+isbn = {9781450304450},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1985793.1985889},
+doi = {10.1145/1985793.1985889},
+abstract = {This paper describes practical experience building and using pluggable type-checkers. A pluggable type-checker refines (strengthens) the built-in type system of a programming language. This permits programmers to detect and prevent, at compile time, defects that would otherwise have been manifested as run-time errors. The prevented defects may be generally applicable to all programs, such as null pointer dereferences. Or, an application-specific pluggable type system may be designed for a single application.We built a series of pluggable type checkers using the Checker Framework, and evaluated them on 2 million lines of code, finding hundreds of bugs in the process. We also observed 28 first-year computer science students use a checker to eliminate null pointer errors in their course projects.Along with describing the checkers and characterizing the bugs we found, we report the insights we had throughout the process. Overall, we found that the type checkers were easy to write, easy for novices to productively use, and effective in finding real bugs and verifying program properties, even for widely tested and used open source projects.},
+booktitle = {Proceedings of the 33rd International Conference on Software Engineering},
+pages = {681–690},
+numpages = {10},
+keywords = {java, bug finding, type system, type qualifier, enum, pluggable type, binary name, field descriptor, case study, intern, fully qualified name, nonnull, annotation, enumeration},
+location = {Waikiki, Honolulu, HI, USA},
+series = {ICSE '11}
+}
+
+@inproceedings{10.5555/1251375.1251384,
+author = {Johnson, Rob and Wagner, David},
+title = {Finding User/Kernel Pointer Bugs with Type Inference},
+year = {2004},
+publisher = {USENIX Association},
+address = {USA},
+abstract = {Today's operating systems struggle with vulnerabilities from careless handling of user space pointers. User/kernel pointer bugs have serious consequences for security: a malicious user could exploit a user/kernel pointer bug to gain elevated privileges, read sensitive data, or crash the system. We show how to detect user/kernel pointer bugs using type-qualifier inference, and we apply this method to the Linux kernel using CQUAL, a type-qualifier inference tool. We extend the basic type-inference capabilities of CQUAL to support context-sensitivity and greater precision when analyzing structures so that CQUAL requires fewer annotations and generates fewer false positives. With these enhancements, we were able to use CQUAL to find 17 exploitable user/kernel pointer bugs in the Linux kernel. Several of the bugs we found were missed by careful hand audits, other program analysis tools, or both.},
+booktitle = {Proceedings of the 13th Conference on USENIX Security Symposium - Volume 13},
+pages = {9},
+numpages = {1},
+location = {San Diego, CA},
+series = {SSYM'04}
+}
+
+@INPROCEEDINGS{10190394,
+  author={Rizwan, Momina and Caldas, Ricardo and Reichenbach, Christoph and Mayr, Matthias},
+  booktitle={2023 IEEE/ACM 5th International Workshop on Robotics Software Engineering (RoSE)},
+  title={EzSkiROS: A Case Study on Embedded Robotics DSLs to Catch Bugs Early},
+  year={2023},
+  volume={},
+  number={},
+  pages={61-68},
+  doi={10.1109/RoSE59155.2023.00014}
+}
+
+@article{higherorderattributegrammars,
+author = {Vogt, H. H. and Swierstra, S. D. and Kuiper, M. F.},
+title = {Higher Order Attribute Grammars},
+year = {1989},
+issue_date = {July 1989},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {24},
+number = {7},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/74818.74830},
+doi = {10.1145/74818.74830},
+abstract = {A new kind of attribute grammars, called higher order attribute grammars, is defined. In higher order attribute grammars the structure tree can be expanded as a result of attribute computation. A structure tree may be stored in an attribute. The term higher order is used because of the analogy with higher order functions, where a function can be the result or parameter of another function. A relatively simple method, using OAGs, is described to derive an evaluation order on the defining attribute occurrences which comprises all possible direct and indirect attribute dependencies. As in OAGs, visit-sequences are computed from which an efficient algorithm for attribute evaluation can be derived.},
+journal = {SIGPLAN Not.},
+month = {jun},
+pages = {131–145},
+numpages = {15}
+}
+
+
+@inproceedings{10.1145/73141.74830,
+author = {Vogt, H. H. and Swierstra, S. D. and Kuiper, M. F.},
+title = {Higher Order Attribute Grammars},
+year = {1989},
+isbn = {089791306X},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/73141.74830},
+doi = {10.1145/73141.74830},
+abstract = {A new kind of attribute grammars, called higher order attribute grammars, is defined. In higher order attribute grammars the structure tree can be expanded as a result of attribute computation. A structure tree may be stored in an attribute. The term higher order is used because of the analogy with higher order functions, where a function can be the result or parameter of another function. A relatively simple method, using OAGs, is described to derive an evaluation order on the defining attribute occurrences which comprises all possible direct and indirect attribute dependencies. As in OAGs, visit-sequences are computed from which an efficient algorithm for attribute evaluation can be derived.},
+booktitle = {Proceedings of the ACM SIGPLAN 1989 Conference on Programming Language Design and Implementation},
+pages = {131–145},
+numpages = {15},
+location = {Portland, Oregon, USA},
+series = {PLDI '89}
+}
+
