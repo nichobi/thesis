@@ -132,7 +132,7 @@ I would also like to thank my partner Lo-Isabel Krantz Andrée, my family, and M
 \chapter{Introduction} % should give the background of your work. Important parts to cover:
 % Give the context of your work, have a short introduction to the area.
 While writing software, developers often make mistakes.
-Catching these mistakes as early as possible can prevent these bugs from ever reaching production code.
+Catching these mistakes, as early as possible, can prevent these bugs from ever reaching production code.
 %\CR{Possible papers to cite as evidence:
 %  \url{https://dl.acm.org/doi/abs/10.1145/1985793.1985889}
 %  \url{https://www.usenix.org/legacy/event/sec04/tech/full_papers/johnson/johnson_html/}
@@ -154,7 +154,7 @@ In this thesis we examine the feasibility of automating the writing of type chec
 
 Pacak et al. have previously implemented a compiler for generating incremental type checkers using declarative logic programming language Datalog\cite{Pacak}.
 It focused on defining a way of expressing typing rules as a series of relations solvable by the Datalog compiler.
-Our use of RAGs instead allows us to build our analysis directly onto a representation of the program's structure.
+Our use of RAGs allows us instead to build our analysis directly onto a representation of the program's structure.
 JastAdd is also an interesting target because it has already been used to implement compilers of several languages, to which our typing rule implementations could potentially be integrated.
 It is also used extensively in courses within the Department of Computer Science at LTH, where our project could serve as an educational tool, providing students an interactive way to define and test simple type systems.
 
@@ -225,7 +225,7 @@ This makes it easier to write analysis based on the behaviour of a program, with
 Several different formulations of a program with identical behaviour may be abstracted into identical ASTs.
 The hierarchical structure of the tree lends itself especially well for recursive analyses, and eases the passing of information between connected structures by connecting them as parent and children nodes.
 %\CR{what is ``this information'', concretely?}
-A statement like \verb|if (true) then {1} else {0}| maybe instead be represented by an if node, with named branches pointing towards the condition and the two values.
+A statement like \verb|if (true) then {1} else {0}| may instead be represented by an if node, with named branches pointing towards the condition and the two values.
 %\CR{You could show an example, but at the very least I would like to read an argument for why the hierarchical structure of a tree is helpful.}
 %\CR{You can find common examples for showing the value of ASTs over concrete syntax trees in the EDAN65 slides.}
 
@@ -271,16 +271,16 @@ Different parts of programs may have different constraints on the types of expre
 %  I strongly recommend using a definition of the form ``all values are expressions, but not all expressions are values''.}
 
 \subsection{Type checking}
-Verifying that these constraints are upheld can assist us in catching programming mistakes, preventing the wrong data types from being used in the wrong places, which may have lead to erroneous or unpredictable behaviour.
+Verifying that these constraints are upheld can assist us in catching programming mistakes, preventing the wrong data types from being used in the wrong places, which may have led to erroneous or unpredictable behaviour.
 There are two main approaches to ensuring the constraints are upheld, dynamic and static type-checking.
 As our project generates a static type checker, we will focus our explanations on that topic, but provide a quick overview of their differences here.
 %\CR{Why would we even want to ensure that they are upheld?}
 
-Dynamic checking is done performed runtime, with each type checked only when needed.
-While this means no checks are performed unnecessarily, it makes it harder to verify the constraints over the whole program, as it won't be tested until each specific part is executed.
+Dynamic checking is performed at runtime, with each type checked only when needed.
+While this means no checks are performed unnecessarily, it makes it harder to verify the constraints over the whole program, as it will not be tested until each specific part is executed.
 
 Static checking is performed on the code before it is run, usually as part of compilation, preventing many faulty programs from being run at all.
-However, since it lacks knowledge of what happens at runtime, it's required to take a more conservative approach, flagging potential errors even in code which will never executed.
+However, since it lacks knowledge of what happens at runtime, it is required to take a more conservative approach, flagging potential errors even in code which will never executed.
 Static checkers analyse the structure of the source code, often in the form of an abstract syntax tree.
 
 %\CR{Why would I want static checking?  Dynamic only checks when needed, isn't that more efficient?}
@@ -296,7 +296,7 @@ We're using the term `type syntax' to mean a definition of the valid types withi
 %\reviewquestion{I believe Pierce simply refers to it as the "set of types". I seem to have got the term type syntax from EDAP15 \url{https://fileadmin.cs.lth.se/cs/Education/EDAP15/2022/web/skills/type-system.html}. In my opinion it works better to have a clear name for it, so I'm keeping it for now, unless you have further thoughts.}
 It can consist of fundamental types, such as integers or booleans.
 There may also be parameterised or composite types, for example lists may have a type parameter defining what values it can contain.
-This enables differentiating lists that store integers from those that store strings, and ensuring that any item added to a list must be of the same type as the type parameter.
+This enables differentiating lists that store integers from those that store strings and ensuring that any item added to a list must be of the same type as the type parameter.
 %\CR{A bit vague; consider giving an example.}
 \begin{figure}[h]
 \begin{lstlisting}[]
@@ -411,9 +411,10 @@ Our project uses it both for the implementation of our compiler and as a compila
 %\CR{It's worth telling the reader here why you are explaining some details about JastAdd.}
 
 \subsubsection{AST specification}\label{astdef}
-One of the key components of a JastAdd projects are the \lstinline{.ast} files, which declare the structure of the abstract syntax tree.
+One of the key components of JastAdd projects are the \lstinline{.ast} files, which declare the structure of the abstract syntax tree.
 This specification is then used by JastAdd to generate Java classes representing the nodes of the AST.
-These AST classes can have a variety of forms, supporting both abstract classes and subclasses, and can contain components such as Java types, tokens and child nodes, and these components may also be optional or list components.
+These AST classes can have a variety of forms, supporting both abstract classes and subclasses.
+They can also contain components such as Java types, tokens and child nodes, and these components may also be optional or list components.
 For a detailed overview of the syntax, see the reference manual\cite{jastaddref}.
 
 \subsubsection{RAG Modules}
@@ -428,7 +429,7 @@ aspect TypingRules {
   \caption{Snippet of a .jrag file, declaring a type attribute for the Zero AST node}
   \label{jragexample}
 \end{figure}
-The RAG modules are written in \lstinline{.jrag} files, declare the attributes to be included in the classes generated by the AST specification.
+The RAG modules are written in \lstinline{.jrag} files and declare the attributes to be included in the classes generated by the AST specification.
 Figure \ref{jragexample} shows a minimal example.
 The files use a syntax very similar to that of Java to declare attributes of a variety of different kinds, and the body of methods corresponds directly to Java code.
 
@@ -550,14 +551,15 @@ If(t1, t2, t3): t
 To express typing rules, we have defined an ASCII representation of the natural semantics syntax used by Pierce\cite{Pierce}.
 Our language can express a subset of the notation used by Pierce, with some differences.
 
-The largest difference lies in the notation used for the expression to be typed, where Pierce uses the object language's native syntactic form, whereas our representation is based on the corresponding AST nodes.
+The largest difference lies in the notation used for the expression to be typed.
+Pierce uses the object language's native syntactic form, whereas our representation is based on the corresponding AST nodes.
 Node names are consistent with those used by JastAdd, followed by parentheses containing variable names to denote their child nodes in the order of their definition.
 This change is necessary to allow us to type arbitrary languages without needing to understand their syntax and grammar, though it does make translating rules from one syntax to the other less straightforward.
 
 Another difference is the use of the type variables, which have been made lowercase.
-This disambiguates them from the concrete types, which as AST nodes themselves are written with uppercase letters, and also aligns the syntax for type terms with that of regular terms, where concrete nodes are written uppercase and variables in lowercase.
-\lstinline{T}, which has been switched to the lowercase \lstinline{t} in order to distinguish concrete types and type variables.
-This disambiguates them from the concrete types, which as AST nodes themselves are written with uppercase letters, and also aligns the syntax for type terms with that of regular terms, where concrete nodes (such as \lstinline{If}) are written uppercase and variables (\lstinline{t1}, \lstinline{t2}, \lstinline{t3}) in lowercase.
+This disambiguates them from the concrete types, which as AST nodes themselves are written with uppercase letters, and also aligns the syntax for type terms with that of regular terms, where concrete nodes are written in uppercase and variables in lowercase.
+%\lstinline{T}, which has been switched to the lowercase \lstinline{t} in order to distinguish concrete types and type variables.
+%This disambiguates them from the concrete types, which as AST nodes themselves are written with uppercase letters, and also aligns the syntax for type terms with that of regular terms, where concrete nodes (such as \lstinline{If}) are written uppercase and variables (\lstinline{t1}, \lstinline{t2}, \lstinline{t3}) in lowercase.
 %\CR{I generally recommend avoiding the passive voice, but the use below is an example that would be OK}
 Commas are also used to separate the premises, and the horizontal line separating premises from the conclusion is represented as a series of dashes.
 
@@ -691,7 +693,7 @@ The rest of the section goes into further detail about individual components.
   }
   \caption{An overview of the project components and flow.
 It represents the flow of the program, with components and artefacts (represented as rectangular boxes) with arrows linking them to actions (elliptical boxes) which in turn have arrows to the new components and artefacts they produce.
-The dashed arrows from represent links from the support library components that exist in the current experimental state of the project, but in a finished product would instead link to component from the object language's own compilation environment.
+The dashed arrows represent links from the support library components that exist in the current experimental state of the project, but in a finished product would instead link from components out of the object language's own compilation environment.
   %\CR{Can you mark, e.g. via colours, the parts that the user provides, and the parts that will be in the generated output project?}
   }
   \label{overviewgraph}
@@ -699,9 +701,9 @@ The dashed arrows from represent links from the support library components that 
 
 \subsection{Typing rule definition}\label{typingruledefinition}
 To express typing rules, we created a simple ASCII representation of the natural deduction notation used by Pierce\cite{Pierce}.
-Custom DSL
-Include typing rules AST specification (or BNF?)
-ASCII representation of natural deduction %BNF (is it BNF?)
+%Custom DSL
+%Include typing rules AST specification (or BNF?)
+%ASCII representation of natural deduction %BNF (is it BNF?)
 
 
 \subsubsection{Typing rules parser}\label{typingrulesparser}
@@ -995,7 +997,7 @@ In Section \ref{sectionresearchquestions}, we evaluate the overall result of our
 %\section{Experimental Setup} % should describe the details of the method used to evaluate your solution(s)/approach. Sometimes this is already addressed in the \textbf{Method}, sometimes this part replaces \textbf{Method}.
 \section{Results} % contains the data (as tables, graphs) obtained via experiments  (benchmarking, polls, interviews). Here you should also describe the individual tables or graphs in text, pointing out interesting outliers and trends.
 We have chosen to evaluate our program using two example languages, inspired by the languages Booleans and Numbers introduced in Types and Programming Languages\cite{Pierce}.
-We have chosen to simply the languages somewhat, to reduce the amount of equivalent cases for our program to parse, making it easier to evaluate each feature individually.
+We have chosen to simplify the languages somewhat, to reduce the amount of equivalent cases for our program to parse, making it easier to evaluate each feature individually.
 Thus, we have defined two languages Bools and BoolsIf, where the former is a simple language consisting of boolean values, an \lstinline{OR} operator, and a zero-value.
 This is a minimal case to produce a meaningful type checker, as it contains values of two different types and a rule with premises limiting the types.
 
@@ -1260,7 +1262,7 @@ If paired with the current error handling of throwing an exception to convey typ
 %\CR{What do you mean by ``seize''?}
 An alternative error handling would suit it better, one able to collect multiple errors without seizing evaluation, perhaps merely adding all the errors to a list and checking whether it is empty before returning a type.
 
-A more informative solution to this might be view rules as a kind of pattern matching, where each rule is evaluated one by one until a matching one is found.
+A more informative solution to this might be to view rules as a kind of pattern matching, where each rule is evaluated one by one until a matching one is found.
 Instead of reporting the reason any individual rule failed, the error might instead display either all or only the best matching of the rules it tried to apply, perhaps with a list of non-holding premises for each one.
 %\CR{This is a good idea; you can even sort the rules by closest matches and only show the top ones if there are many.}
 %\subsubsection{Error handling}
@@ -1269,7 +1271,7 @@ Instead of reporting the reason any individual rule failed, the error might inst
 %
 %This approach gave us the minimum information to distinguish between successful and failing type checking, with a very simple implementation.
 %It does however complicate the case where a single node has multiple applicable typing rules, depending on their premises.
-%In Section \ref{improvederrorhandling} we discuss alternative approaches.
+%In Section \ref{,improvederrorhandling} we discuss alternative approaches.
 
 %\CR{Something about error handling would be good to discuss here}
 
@@ -1306,8 +1308,8 @@ This approach could be improved by finding the first use of each type variable d
 %Splitting code between multiple JastAdd components (and java) can get messy
 Writing idiomatic JastAdd components often requires splitting a single algorithm into many different pieces of code.
 Our approach to generating type attributes was based around recursively traversing the typing rule AST to fill in each bit of information, rather than having one parent node trying to form an understanding of the entire tree.
-The plus side of this recursive approach is that each component doesn't need an intricate understanding of the nodes underneath it.
-A \lstinline{Rule} node doesn't need to know whether the right-hand side of the conclusion is a concrete type or a type variable.
+The plus side of this recursive approach is that each component does not need an intricate understanding of the nodes underneath it.
+For example, a \lstinline{Rule} node does not need to know whether the right-hand side of the conclusion is a concrete type or a type variable.
 The \lstinline{HasType} node representing the conclusion generates the structure of the return statement, calling on the right-hand side node to fill in the exact type.
 
 However, this code could at times become complex, as certain lines required bits of information from several different parts of the AST, several steps apart.
@@ -1385,7 +1387,7 @@ While the goal is similar to ours, their project defines a formalism for express
 
 %they take a different approach, by converting typing rules into the  \CR{second half of this sentence confuses me}.
 
-Their work is ends up largely focused on expressing typing rules within the limits of the Datalog language, which can only compute finite relations.
+Their work ends up largely focused on expressing typing rules within the limits of the Datalog language, which can only compute finite relations.
 We have a significantly different compilation target, JastAdd, which allows us to use reference attribute grammars to evaluate the typing relations, utilising a built-in AST structure.
 Whereas Datalog is a fully declarative language, with JastAdd we express typing relations as declared attributes on the AST, with their implementations written in imperative Java code.
 %\CR{Datalog is fully declarative, whereas JastAdd uses declarative rules that connect snippets of imperative Java code.  Is that what you meant?}
@@ -1431,7 +1433,7 @@ A type checker working on these principles is certainly a possibility, though it
 
 \subsection{Improved error handling}\label{improvederrorhandling}
 The current exception-based error handling is rather primitive and leaves much to be desired.
-Some improvements, such as provide more useful error messages, could be possible by making minor changes to how these exceptions are generated.
+Some improvements, such as providing more useful error messages, could be possible by making minor changes to how these exceptions are generated.
 Information such as what part of the input program the type error occurred at, what the failing typing rule was and what prerequisites it has, could be added to the exception message, for a quick usability improvement.
 
 An improvement demanding more extensive changes would be collecting multiple errors, instead of seizing the type checker at the first discovered error.
@@ -1468,7 +1470,7 @@ This could be solved simply by wrapping each rule within brackets, creating a se
 
 %\CR{Not sure that there is anything needed here}
 
-\subsection{Improved type checking algorithm}
+%\subsection{Improved type checking algorithm}
 
 
 % Should use consistent formatting when it comes to Names ("FirstName LastName", or "F. LastName")
