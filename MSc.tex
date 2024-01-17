@@ -1457,7 +1457,7 @@ Our project will compile invalid or misspelled typing rules without complaint, l
 
 \subsection{Handle multiple rules for the same node}
 In type systems it is generally considered valid to have multiple typing rules for the same construct, with different, non-intersecting prerequisites.
-It could for example be useful to type an addition operator for a variety of different numerical types, which may not have a common ancestor.
+It could, for example, be useful to type an addition operator for a variety of different numerical types, which may not have a common ancestor.
 
 Most of the work to support this is in place, though the first rule to fail would throw a type error exception, preventing the later rules from evaluating.
 These errors would either have to be caught, and only emitted if all rules had failed, or a new error handling system not based around exceptions could be introduced.
@@ -1488,16 +1488,15 @@ The source code for our project is available at \\\url{https://github.com/nichob
 % display used packages information unless noflielist is used in the cslthse-msc package option
 \printfilelist
 
-%TODO: Re-add the popsci summary
-%%make sure we're on even page with the pop-sci
-%\checkoddpage
-%\ifoddpage
-%\else
-%  \newpage
-%  \thispagestyle{empty}
-%  \mbox{ }
-%\fi
-%\includepdf[pages={1}]{popsci/popsci.pdf}
+%make sure we're on even page with the pop-sci
+\checkoddpage
+\ifoddpage
+\else
+  \newpage
+  \thispagestyle{empty}
+  \mbox{ }
+\fi
+\includepdf[pages={1}]{popsci/popsci.pdf}
 \end{appendices}
 
 \end{document}
