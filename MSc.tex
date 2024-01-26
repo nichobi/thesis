@@ -50,7 +50,7 @@
 \student{Nicholas Boyd Isacsson}{nicholas@isacsson.se}
 %\students{Flavius Gruian}{Flavius.Gruian@cs.lth.se}{Camilla Lekebjer}{Camilla.Lekebjer@cs.lth.se}
 
-\thesisnumber{LU-CS-EX: 2023-79} % Magic Number! Do not change unless Birger Swahn asks you to do so!
+\thesisnumber{LU-CS-EX: 2024-06} % Magic Number! Do not change unless Birger Swahn asks you to do so!
 % default is Master. Uncomment the following for "kandidatarbete"/Bachelor's thesis
 %\thesistype{Bachelor}{Kandidatarbete}
 
@@ -64,9 +64,7 @@
 
 %\title{Formatting a Master's Thesis}
 \title{Type Checker Generation using Reference Attribute Grammars}
-\begin{otherlanguage}{swedish}
-\svensktitel{Infoga den Svenska titeln här!}
-\end{otherlanguage}
+\svensktitel{Generering av Typkontrollerare med Referens-Attribut-Grammatik}
 
 %\onelinetitle
 %\twolinestitle
@@ -84,12 +82,10 @@
 %\date{January 16, 2015}
 
 \acknowledgements{
-Sincere thanks to Christoph Reichenbach,
-whose enthusiasm for the subject inspired me to pursue this subject
-and whose guidance in matters of both implementation and writing were key to this thesis.
+Sincere thanks to Christoph Reichenbach, whose enthusiasm for the field inspired me to pursue this project and whose guidance in matters of both implementation and writing was key to this thesis.
 Additional thanks to Niklas Fors for providing several valuable insights, greatly simplifying certain components and Alexandru Dura for providing some guidance to JastAdd internals.
 
-I would also like to thank my partner Lo-Isabel Krantz Andrée, my family, and Moritz for their support throughout the duration of this project.
+I would also like to thank my partner Lo-Isabel Krantz Andrée as well as my family, friends, and Moritz for their support throughout the duration of this project.
 
 %If you want to thank people, do it here, on a separate right-hand page. Both the U.S. \textit{acknowledgments} and the British \textit{acknowledgements} spellings are acceptable.
 %
@@ -98,6 +94,9 @@ I would also like to thank my partner Lo-Isabel Krantz Andrée, my family, and M
 %We would also like thank Camilla Lekebjer for her contribution on this template, as well as Magnus Hultin for his popular science summary class and example document.
 %
 %Thanks also go to the following (former) students for helping with feedback and suggestions on this template: Mikael Persson, Christoffer Lundgren, Mahmoud Nasser.
+\vspace*{\fill}
+\hspace*{\fill}
+\includegraphics[scale=0.5]{assets/cat.pdf}
 }
 
 \theabstract{
@@ -169,7 +168,7 @@ We then devise a strategy to translate these rules into snippets of iterative Ja
 %      Hint: look at determinism in evaluation (syntax-directedness), unification, but stick to intuition in this chapter; you can elaborate in Chapter 2 or later if you think it helps.}
 
 We define a custom parsable language for typing rules adapted from natural semantics, and introduce a strategy to compile it into RAG attributes.
-Our case studies show that simple type systems can be systematically compiled into attributes on the AST, and the tree syntax provides a natural approach for recursive evaluation.
+Our case studies show that simple type systems can be systematically compiled into attributes on the Abstract Syntax Tree (AST), and the tree syntax provides a natural approach for recursive evaluation.
 Overall, this initial exploration shows that RAGs are a flexible approach for implementing type checkers for syntax-directed typing rules, though there are difficulties when implementing rule verification at compiler runtime.
 %\CR{Usually you then put a high-level summary of the rest of the thesis here (not mentioning chapters yet), something like ``we examine X and Y and introduce a strategy for Z.
 %  We evaluate the approach against Foo, and demonstrate Bar.
@@ -214,6 +213,43 @@ These are extensively utilised in almost every stage of our project, both in ter
 Section \ref{typetheory} details type systems, by explaining each of the component pieces, followed by a description of their use within static type checking.
 
 \section{Abstract syntax trees}\label{abstractsyntaxtrees}
+\begin{figure}[]
+  \centering
+  \begin{tikzpicture}[
+      every node/.style = {align=center, line width=0.8pt},
+      every path/.style = {draw, -latex},
+      astnode/.style={draw=black},
+      %greennode/.style={shape=circle, draw=green, line width=2},
+      %rednode/.style={shape=circle, draw=red, line width=2}
+    ]
+    \node (if)   [astnode]                             {If};
+    \node (then) [astnode, below=of if]                {True};
+    \node (else) [astnode, right=of then]              {False};
+    \node (cond) [astnode, left=of then]               {GreaterThan};
+    \node (one)  [astnode, below = of cond.south west] {Int\\ \textcolor{gray}{value: 1}};
+    \node (zero) [astnode, below = of cond.south east] {Int\\ \textcolor{gray}{value: 0}};
+
+    %\node () [above right = 0.3cm and -1cm of cond] {cond};
+    %\node () [above left = 0.1cm and -0.7cm of then] {then};
+    %\node () [above left= 0.3cm and -0.5cm of else] {else};
+    %\node () [above= 0.3cm of one] {left};
+    %\node () [above= 0.3cm of zero] {right};
+
+    \draw (if.south)   to (cond.north);
+    \draw (if.south)   to (then.north);
+    \draw (if.south)   to (else.north);
+    \draw (cond.south) to (one.north);
+    \draw (cond.south) to (zero.north);
+    %\draw (if.south)   to [edge label=Cond]  (cond.north);
+    %\draw (if.south)   to [edge label=Then]  (then.north);
+    %\draw (if.south)   to [edge label=Else]  (else.north);
+    %\draw (cond.south) to [edge label=Left]  (one.north);
+    %\draw (cond.south) to [edge label=Right] (zero.north);
+
+  \end{tikzpicture}
+  \caption{Example of an abstract syntax tree}
+  \label{astexample}
+\end{figure}
 The syntax of a language is the definition of the symbols and structures which make up a valid program.
 %\CR{What's a syntax?}
 An abstract syntax tree (AST) is a simplified tree-based representation of the syntax.
@@ -225,7 +261,8 @@ This makes it easier to write analysis based on the behaviour of a program, with
 Several different formulations of a program with identical behaviour may be abstracted into identical ASTs.
 The hierarchical structure of the tree lends itself especially well for recursive analyses, and eases the passing of information between connected structures by connecting them as parent and children nodes.
 %\CR{what is ``this information'', concretely?}
-A statement like \verb|if (true) then {1} else {0}| may instead be represented by an if node, with named branches pointing towards the condition and the two values.
+Figure \ref{astexample} shows an example of an abstract syntax tree representation of the expression \verb|if 1 > 0 then true else false|.
+%A statement like \verb|if (true) then {1} else {0}| may instead be represented by an if node, with named branches pointing towards the condition and the two values.
 %\CR{You could show an example, but at the very least I would like to read an argument for why the hierarchical structure of a tree is helpful.}
 %\CR{You can find common examples for showing the value of ASTs over concrete syntax trees in the EDAN65 slides.}
 
@@ -272,7 +309,7 @@ Different parts of programs may have different constraints on the types of expre
 
 \subsection{Type checking}
 Verifying that these constraints are upheld can assist us in catching programming mistakes, preventing the wrong data types from being used in the wrong places, which may have led to erroneous or unpredictable behaviour.
-There are two main approaches to ensuring the constraints are upheld, dynamic and static type-checking.
+There are two main approaches to ensuring the constraints are upheld, dynamic and static type checking.
 As our project generates a static type checker, we will focus our explanations on that topic, but provide a quick overview of their differences here.
 %\CR{Why would we even want to ensure that they are upheld?}
 
@@ -297,15 +334,18 @@ We're using the term `type syntax' to mean a definition of the valid types withi
 It can consist of fundamental types, such as integers or booleans.
 There may also be parameterised or composite types, for example lists may have a type parameter defining what values it can contain.
 This enables differentiating lists that store integers from those that store strings and ensuring that any item added to a list must be of the same type as the type parameter.
+
+Figure \ref{typesyntaxspec} shows an example specification of a type syntax, consisting of only two types, integers and booleans.
+This specification is used for all the languages used in our project.
 %\CR{A bit vague; consider giving an example.}
-\begin{figure}[h]
+\begin{figure}[]
 \begin{lstlisting}[]
 abstract Type;
 
 Bool : Type;
 Int  : Type;
 \end{lstlisting}
-  \caption{Type syntax consisting of two types, for boolean and integer values, written as a JastAdd AST specification (see Section \ref{astdef})}
+  \caption{Type syntax consisting of two types, for boolean and integer values, written as a JastAdd AST specification (see Section \ref{astdef}).}
   \label{typesyntaxspec}
 \end{figure}
 
@@ -365,7 +405,7 @@ If no matching typing rules can be found, a type error is produced.
 The simplest program possible with the typing rules T-True and T-If, consists of the single value \lstinline{true}.
 It can immediately be matched to the rule T-True, giving the type \lstinline{Bool}.
 
-A slightly more complex case can be expressed as \lstinline{if true then true else true}.
+A somewhat more complex case can be expressed as \lstinline{if true then true else }\\\lstinline{true}.
 The only rule that matches the structure, is T-If, with \lstinline{true} values taking the place of each of the $t_i$ variables.
 To evaluate this rule, we are thus required to recursively evaluate the types each of our $t_i$ variables, to ensure they match the premises.
 In this case, the type of $t_1$ evaluates to \lstinline{Bool}, matching the first premise of T-If.
@@ -406,19 +446,38 @@ This provides a simplified and more flexible method for interconnectedness betwe
 %Please introduce them in a separate section: you can very directly connect them to the idea of ``type syntax''.}
 
 \subsection{JastAdd}
-JastAdd is an implementation of RAGs for Java, offering a flexible system for writing language analysis in an object-oriented fashion.\cite{JastAdd}
+JastAdd is an implementation of RAGs for Java, offering a flexible system for writing language analysis in an object-oriented fashion\cite{JastAdd}.
 Our project uses it both for the implementation of our compiler and as a compilation target, as it outputs JastAdd code.
 %\CR{It's worth telling the reader here why you are explaining some details about JastAdd.}
 
 \subsubsection{AST specification}\label{astdef}
+\begin{figure}[]
+\begin{lstlisting}[]
+Expression ::= Term;
+
+abstract Term;
+True  : Term;
+False : Term;
+Or    : Term ::= Left:Term Right:Term;
+Zero  : Term;
+
+\end{lstlisting}
+  \caption{AST specification for the Bools language.}
+  \label{astspecexample}
+\end{figure}
 One of the key components of JastAdd projects are the \lstinline{.ast} files, which declare the structure of the abstract syntax tree.
 This specification is then used by JastAdd to generate Java classes representing the nodes of the AST.
 These AST classes can have a variety of forms, supporting both abstract classes and subclasses.
 They can also contain components such as Java types, tokens and child nodes, and these components may also be optional or list components.
+
+Figure \ref{astspecexample} shows a small example of the specificaton syntax.
+Each of the node definitions begins with a class name.
+\lstinline{True : Term;} indicates that the \lstinline{True} node is a subclass of the abstract class \lstinline{Term}.
+If a node has child nodes, these are provided after the \lstinline{::=}, and may either have a name and a type separated by a colon, or only a type.
 For a detailed overview of the syntax, see the reference manual\cite{jastaddref}.
 
 \subsubsection{RAG Modules}
-\begin{figure}[h]
+\begin{figure}[]
 \begin{lstlisting}[language=jrag]
 aspect TypingRules {
   syn Type Zero.type() {
@@ -433,7 +492,7 @@ The RAG modules are written in \lstinline{.jrag} files and declare the attribute
 Figure \ref{jragexample} shows a minimal example.
 The files use a syntax very similar to that of Java to declare attributes of a variety of different kinds, and the body of methods corresponds directly to Java code.
 
-\chapter{Approach/Design} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
+\chapter{Approach} % should contain a description of your solution(s), with all the theoretical background needed. On occasion this is replaced by a subset or all of the following:
 
 %\CR{Missing: introduction to this chapter'}
 We begin this chapter with a section presenting our language for writing typing rules, an adaptation of the natural semantics used to notate typing rules in the academic context.
@@ -476,7 +535,7 @@ term_list =
 uppercase_id = "[A-Z][A-Za-z0-9-]";
 uppercase_id = "[a-z][A-Za-z0-9-]";
 \end{lstlisting}
-  \caption{A definition of the concrete syntax for the typing rule language in a notation similar to BNF.}
+  \caption{A definition of the concrete syntax for the typing rule language in a notation similar to Backus-Naur form (BNF).}
   \label{trconcretesyntaxspec}
 \end{figure}
 %\CR{After reading, I would now say that it's preferable to me if you keep the language definition separate
@@ -548,7 +607,7 @@ If(t1, t2, t3): t
 %No infix notation
 %No environments
 
-To express typing rules, we have defined an ASCII representation of the natural semantics syntax used by Pierce\cite{Pierce}.
+To express typing rules, we have defined an ASCII representation of the natural semantics syntax used by Pierce\cite{Pierce}, with its concrete syntax given in Figure \ref{trconcretesyntaxspec}.
 Our language can express a subset of the notation used by Pierce, with some differences.
 
 The largest difference lies in the notation used for the expression to be typed.
@@ -707,14 +766,14 @@ To express typing rules, we created a simple ASCII representation of the natural
 
 
 \subsubsection{Typing rules parser}\label{typingrulesparser}
-The parser for typing rules is written using JFlex\cite{jflex}, a scanner generator, and Beaver\cite{beaver}, an LALR parser generator.
+The parser for typing rules is written using JFlex\cite{jflex}, a scanner generator, and Beaver\cite{beaver}, a parser generator.
 JFlex takes a series of regular expressions to generate a tokenizer for the parsed language.
 The tokens are passed on to Beaver along with a parser definition in extended Backus-Naur form (EBNF), to generate a parser.
 
 
 \subsubsection{Typing rules AST}\label{typingrulesast}
 %\CR{I would give this AST/BNF a more specific name here, to distinguish it from the other two (as done nicely already in Figure 3.1)}
-\begin{figure}[h]
+\begin{figure}[]
 \begin{lstlisting}[]
 RuleSet ::= Rule*;
 
@@ -747,7 +806,7 @@ Currently, our compiler does not support type parameters, so they are not includ
 To support this in future, an additional \lstinline{TyTerm} could be added which includes a list of \lstinline{TyTerm}s along with its ID.
 
 \subsection{Support library}
-In addition to the generated type-checking files, there are a number of files that are added to the output file that are identical for all generated type checkers, which we refer to as the support library.
+In addition to the generated type checking files, there are a number of files that are added to the output file that are identical for all generated type checkers, which we refer to as the support library.
 Some of these are key components of the type checker, but others are dummy components included solely for convenience of testing.
 We expect that in a real world use case, our software would integrate into an object language's compiler pipeline, and utilise its own parser and project files to provide the abstract syntax tree for our type checking to tie into.
 For testing purposes, we have written generic versions of these components, which work for any supported object language.
@@ -780,13 +839,14 @@ Expression(
 This approach does have the issue of occasionally parsing invalid programs, due to the reflection API finding an additional parameterless default constructor.
 This leads the parser to always accept nodes written with no children, such as \lstinline{Expression(Or())}, even if the AST specification requires them.
 These children will be null, causing issues further down the line, though as this parser is only intended for testing it is of little concern.
+Our tests have been carefully written to avoid this error, and any faulty tests would result in obvious null pointer exceptions during further evaluation.
 %\CR{Does this also apply to the analysis of typing rules?  If so, you can mention it as ``future work''
 %  or describe how it could be fixed (it's not a fundamental limitation, so nothing that warrants a deeper discussion)}
 
 \subsubsection{Project files}\label{projectfiles}
 For ease of use the compiler will output a complete runnable Gradle project.
 It can parse simplified tree-representations of programs, and utilise these to perform the type checking.
-In a future real world use case, it is intended for our generated type-checking aspects to integrate into a pre-existing project, which already has all the necessary project files to parse an AST tree, to which our type aspects could integrate.
+In a future real world use case, it is intended for our generated type checking aspects to integrate into a pre-existing project, which already has all the necessary project files to parse an AST tree, to which our type aspects could integrate.
 
 %\CR{Can you elaborate on if/how this would integrate with an existing language implementation?
 %  I've always interpreted everything as that you start with some `objectlanguage.jar' file of an existing language (given that you use reflection), and you get out a fresh Gradle project that uses that `objectlanguage.jar' for parsing and AST construction, but since you generate JastAdd source code, you can't really (to my understanding) add the `type()' attribute etc. to the existing implementation, since JastAdd needs to run over the source jrag files.
@@ -818,7 +878,7 @@ We start by presenting pseudocode for our typing rule evaluation.
 %Section \ref{typecheckingalgorithm} presenting a p the algorithm we use to evaluate typing rules in pseudocode.
 This is followed by Section \ref{codegeneration}, which explains how we generate  code to implement this algorithm.
 
-\subsection{Type-checking algorithm}\label{typecheckingalgorithm}
+\subsection{Type checking algorithm}\label{typecheckingalgorithm}
 
 %For each rule:
 %\begin{enumerate}
@@ -843,7 +903,7 @@ This is followed by Section \ref{codegeneration}, which explains how we generate
 %  \item Throw a type error if we reach this point
 %\end{enumerate}
 
-\begin{figure}[]
+\begin{figure}[bhpt]
 %foreach parameter in rule.conclusion.parameters:
 %  declare var "parameer.name" = getChild(parameter.index)
 \begin{lstlisting}[]
@@ -881,7 +941,7 @@ From the root node, calls propagate down the tree to fill in increasingly specif
 
 \subsubsection{Aspect generation}
 The \lstinline{RuleSet} node is responsible for generating the overall structure of the output file, a JastAdd aspect called \lstinline{TypingRules}.
-It sorts its \lstinline{Rule} children by which nodes they apply to, so that if multiple tying rules type the same node, they can be inserted into the same method implementation (though this feature is not yet fully working).
+It sorts its \lstinline{Rule} children by which nodes they apply to, so that if multiple typing rules type the same node, they can be inserted into the same method implementation (though this feature is not yet fully working).
 
 \subsubsection{Method implementation overview}
 The implementation of a typing rule can range from a single return statement to a system of declarations of variables, type variables and control flow.
@@ -893,17 +953,17 @@ This is followed by an if-statement to test whether the premises hold true, cont
 Should the premises not hold, a type error is produced.
 %\CR{What if there are multiple rules that apply to the same AST node?  E.g., one rule that allows \ty{Int} addition and one that allows \ty{String} addition.}
 
-\subsubsection{Parameters}
-When the typing rules concern a node with parameters, these can be named arbitrarily in the typing rule.
+\subsubsection{Child nodes}
+When the typing rules concern a node with children, these are bound to free variables which can be named arbitrarily.
 %\CR{Who does the naming?  Why is the ``arbitrarily'' bit important?}
 %\CR{ Will this work if the type system specification has a type variable called ``this'' or ``null'' or ``class''?}.
 A variable with the same name will be instantiated at the beginning of the method, fetching the corresponding child node by index.
 This naming format means any errors reported will use the same variable names as the user has defined in the typing rules, in order to minimise the disconnect when analysing errors from the generated code.
-However, it also means it is not possible to name a parameter any of the reserved keywords in Java.
+However, it also means it is not possible to name a variable any of the reserved keywords in Java.
 This could be alleviated by adding a prefix to the variable names, at the cost of a slight indirection for the user.
 These variables are then utilised in later premises or type variable declarations.
 
-\subsubsection{Type variables}
+\subsubsection{Type variables}\label{typevariables}
 In the case of type variables, much of the logic is handled at runtime, to simplify the code generation.
 Each type variable that appears in the conclusion is instantiated to a null value, and the code generated by each premise first checks if the value is still null and either assigns the variable its own type or tests to make sure the existing type matches its own.
 
@@ -1114,7 +1174,7 @@ If : Term ::= Cond:Term Then:Term Else:Term;
 x: Bool,
 y: a,
 z: a
-------------------
+--------------
 If(x, y, z): a
 \end{lstlisting}
   \caption{Additional typing rules for the BoolsIf language, an extension for the Bools typing rules in Figure \ref{boolstr} with an if term}
@@ -1200,10 +1260,11 @@ The next two declare that the two other children must be of the type \lstinline{
 This type variable \lstinline{a} also subsequently appears in the resulting type of the if term.
 
 %\CR{``Shown in Figure~\ref{reference}'' is the current preferred form in our field}
-The code for this rule is shown in Figure \ref{iftrgen}, and begins with three parameter declarations as in previous rules, followed by a new type variable declaration on line 6, which is instantiated to null.
+The code for this rule is shown in Figure \ref{iftrgen}, and begins with three local variable declarations as in previous rules, followed by a new type variable declaration on line 6, which is instantiated to null.
 For each invocation of the type variable, a code section is generated, which checks if the type variable is still null, and if so assigns it to the type of the left-hand side term, or if it has been assigned checks whether the types match each other. Should any non-matches be found, a type error is thrown.
 
-The rest of the method is similar, with premises being checked -- including a redundant check of the type variables -- before returning the type variable, or a type error being thrown.
+The rest of the method is similar, with premises being checked -- including a redundant check of the type variables, as mentioned in Section \ref{typevariables} -- before returning the type variable, or a type error being thrown.
+This type checker accurately captures the intended behaviour of the typing rule.
 
 \section{Research questions}\label{sectionresearchquestions}
 
@@ -1249,7 +1310,7 @@ Parametric types, such as lists where the type of the list contains information 
 
 The current implementation of \lstinline[language=java]{matches()} would however consider all lists to match, without comparing the child nodes.
 Perhaps the default implementation could be extended to compare all child elements, at the risk of potentially tricky evaluation, or these more advanced types would require manually overriding the method.
-Yet another approach may be to design a way to define type equality within the typing rules, allowing users to customise the behaviour without having to restort to manually writing JastAdd code.
+Yet another approach may be to design a way to define type equality within the typing rules, allowing users to customise the behaviour without having to resort to manually writing JastAdd code.
 
 %\CR{Recursive term equivalence can become tricky when you are dealing with type variables (cf. the Hindley-Milner inference exercise in EDAP15).}
 %\CR{Type equality could also be expressed in terms of typing rules.  This approach is quite common with subtyping.}
@@ -1335,7 +1396,7 @@ As JastAdd itself also adds a layer of indirection, by taking the attributes def
 
 We also ran into a few tooling issues.
 The first was Gradle not willing to recognise JastAdd as both a library and a build component, which we eventually solved by manually providing a jar file separately from the resolved build dependency.
-The second one was our LSP server, jdtls, not recognising JastAdd imports, which we never managed to fix.
+The second one was our Language Server Protocol (LSP) server, jdtls, not recognising JastAdd imports and flagging every use thereof as an error, which we never managed to fix.
 %Gradle troubles
 %Library not recognised by LSP server
 %Difficult runtime parsing of AST files
@@ -1483,7 +1544,7 @@ The source code for our project is available at \\\url{https://github.com/nichob
 
 \vspace*{\fill}
 \hspace*{\fill}
-\includegraphics[scale=0.2]{stagbeetle.pdf}
+\includegraphics[scale=0.2]{assets/stagbeetle.pdf}
 
 % display used packages information unless noflielist is used in the cslthse-msc package option
 \printfilelist
